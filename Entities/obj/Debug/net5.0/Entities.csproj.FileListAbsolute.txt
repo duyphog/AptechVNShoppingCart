@@ -1,0 +1,12 @@
+/Users/phongnd/Desktop/Aptech/ShoppingCart/Entities/bin/Debug/net5.0/Entities.deps.json
+/Users/phongnd/Desktop/Aptech/ShoppingCart/Entities/bin/Debug/net5.0/Entities.dll
+/Users/phongnd/Desktop/Aptech/ShoppingCart/Entities/bin/Debug/net5.0/ref/Entities.dll
+/Users/phongnd/Desktop/Aptech/ShoppingCart/Entities/bin/Debug/net5.0/Entities.pdb
+/Users/phongnd/Desktop/Aptech/ShoppingCart/Entities/obj/Debug/net5.0/Entities.csprojAssemblyReference.cache
+/Users/phongnd/Desktop/Aptech/ShoppingCart/Entities/obj/Debug/net5.0/Entities.GeneratedMSBuildEditorConfig.editorconfig
+/Users/phongnd/Desktop/Aptech/ShoppingCart/Entities/obj/Debug/net5.0/Entities.AssemblyInfoInputs.cache
+/Users/phongnd/Desktop/Aptech/ShoppingCart/Entities/obj/Debug/net5.0/Entities.AssemblyInfo.cs
+/Users/phongnd/Desktop/Aptech/ShoppingCart/Entities/obj/Debug/net5.0/Entities.csproj.CoreCompileInputs.cache
+/Users/phongnd/Desktop/Aptech/ShoppingCart/Entities/obj/Debug/net5.0/Entities.dll
+/Users/phongnd/Desktop/Aptech/ShoppingCart/Entities/obj/Debug/net5.0/ref/Entities.dll
+/Users/phongnd/Desktop/Aptech/ShoppingCart/Entities/obj/Debug/net5.0/Entities.pdb
