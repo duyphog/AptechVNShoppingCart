@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,34 +13,22 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
+        private readonly IRepositoryWrapper _repoWrapper;
         private readonly ILoggerManager _logger;
 
-        public WeatherForecastController(ILoggerManager logger)
+        public WeatherForecastController(IRepositoryWrapper repoWrapper,ILoggerManager logger)
         {
+            _repoWrapper = repoWrapper;
             _logger = logger;
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public IEnumerable Get()
         {
-            _logger.LogInfo("Here is info message from the controller.");
-            _logger.LogDebug("Here is debug message from the controller.");
-            _logger.LogWarn("Here is warn message from the controller.");
-            _logger.LogError("Here is error message from the controller.");
+            var products = _repoWrapper.Product.FindAll().AsEnumerable();
+            var lists = products.ToList();
 
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return products.Select(x => new { x.Code, x.Name });
         }
     }
 }

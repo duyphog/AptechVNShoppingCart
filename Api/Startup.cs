@@ -1,17 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Api.Extentions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NLog;
 
@@ -24,7 +19,7 @@ namespace Api
         public Startup(IConfiguration configuration)
         {
             _config = configuration;
-            LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+            LogManagerLoadConfig();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -54,6 +49,15 @@ namespace Api
 
             app.UseHttpsRedirection();
 
+            app.UseStaticFiles();
+
+            app.UseCors("CorsPolicy");
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.All
+            });
+
             app.UseRouting();
 
             app.UseAuthorization();
@@ -62,6 +66,11 @@ namespace Api
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private static void LogManagerLoadConfig()
+        {
+            LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
         }
     }
 }
