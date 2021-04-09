@@ -16,12 +16,11 @@ namespace Repository
         {
         }
 
-        public PagedList<Product> GetAllProductAsync(ProductParameters productParameters)
+        public async Task<PagedList<Product>> GetAllProductAsync(ProductParameters productParameters)
         {
-            var queries = FindAll().OrderBy(p => p.Id);
+            var queries = FindAll().OrderBy(p => p.Id).AsQueryable();
 
-            return PagedList<Product>.ToPagedList(queries, productParameters.PageNumber, productParameters.PageSize);
-            
+            return await PagedList<Product>.ToPagedList(queries, productParameters.PageNumber, productParameters.PageSize);
         }
 
         public async Task<Product> GetProductByIdAsync(int id)

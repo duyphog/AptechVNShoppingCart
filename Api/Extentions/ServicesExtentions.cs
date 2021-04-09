@@ -5,6 +5,8 @@ using LoggerServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using Repository;
 
 namespace Api.Extentions
@@ -31,7 +33,9 @@ namespace Api.Extentions
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration config)
         {
             var connectionString = config["ConnectionStrings:DefaultSqlConnection"];
-            services.AddDbContext<RepositoryContext>(o => o.UseSqlServer(connectionString));
+            services.AddDbContext<RepositoryContext>(options => options
+                    .UseSqlServer(connectionString)
+            );
         }
 
         public static void ConfigureRepositoryWrapper(this IServiceCollection services)

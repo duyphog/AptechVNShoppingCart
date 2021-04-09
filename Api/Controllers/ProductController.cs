@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Api.Extentions;
 using Contracts;
 using Entities.Helper;
 using Entities.Models;
@@ -18,21 +19,12 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<Product> GetAllAsync([FromQuery] ProductParameters productParameters)
+        public async Task<ActionResult<Product>> GetAllAsync([FromQuery] ProductParameters productParameters)
         {
-            var products =  _repoWrapper.Product.GetAllProductAsync(productParameters);
+            var products = await _repoWrapper.Product.GetAllProductAsync(productParameters);
 
-            var metadata = new
-            {
-                products.TotalCount,
-                products.PageSize,
-                products.CurrentPages,
-                products.TotalPages,
-                products.HasPrevious,
-                products.HasNext
-            };
-
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            Response.AddPagination(products.TotalCount, products.PageSize, products.CurrentPages,
+                                   products.TotalPages, products.HasPrevious, products.HasNext);
 
             if (products.CurrentPages > products.TotalPages)
                 return BadRequest("CurrentPages > TotalPages");
