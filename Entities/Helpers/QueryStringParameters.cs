@@ -1,9 +1,9 @@
 ﻿using System;
-namespace Entities.Helper
+namespace Entities.Helpers
 {
     public abstract class QueryStringParameters
     {
-        const int maxPageSize = 30;
+        private const int maxPageSize = 30;
 
         private int _pageSize = 10;
 
@@ -15,5 +15,9 @@ namespace Entities.Helper
 
             get => _pageSize;
         }
+
+        public string OrderBy { get; set; }
+
+        public string Fields { get; set; }
     }
 }

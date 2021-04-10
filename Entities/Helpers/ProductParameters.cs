@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Entities.Helper
+namespace Entities.Helpers
 {
     public class ProductParameters : QueryStringParameters
     {

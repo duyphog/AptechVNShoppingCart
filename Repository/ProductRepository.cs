@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Contracts;
 using Entities;
-using Entities.Helper;
+using Entities.Helpers;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 

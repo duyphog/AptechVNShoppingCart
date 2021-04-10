@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Entities.Helper;
+using Entities.Helpers;
 using Entities.Models;
 
 namespace Contracts

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Api.Extentions;
+using Api.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -29,6 +30,7 @@ namespace Api
             services.ConfigureLoggerService();
             services.ConfigureSqlContext(_config);
             services.ConfigureRepositoryWrapper();
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -46,6 +48,8 @@ namespace Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api v1"));
             }
+
+            app.ConfigCustomExceptionMiddleware();
 
             app.UseHttpsRedirection();
 
