@@ -28,9 +28,13 @@ namespace Api
         {
             services.ConfigureCors();
             services.ConfigureLoggerService();
+            services.ConfigureAuthentication(_config);
             services.ConfigureSqlContext(_config);
             services.ConfigureRepositoryWrapper();
+            services.ConfigureAppUserService();
+            services.ConfigureTokenServices();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+            
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

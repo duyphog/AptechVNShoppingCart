@@ -7,6 +7,10 @@ namespace Contracts
     {
         IProductRepository Product { get; }
 
+        IAppUserRepository AppUser { get; }
+
+        IAppUserRoleRepository AppUserRole { get; }
+
         Task SaveAsync();
     }
 }
