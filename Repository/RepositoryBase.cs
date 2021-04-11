@@ -31,12 +31,12 @@ namespace Repository
             RepositoryContext.Set<T>().Add(entity);
         }
 
-        public void Delete(T entity)
+        public void Update(T entity)
         {
             RepositoryContext.Set<T>().Update(entity);
         }
 
-        public void Update(T entity)
+        public void Delete(T entity)
         {
             RepositoryContext.Set<T>().Remove(entity);
         }

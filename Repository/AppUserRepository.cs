@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Contracts;
 using Entities;
-using Entities.Helpers;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -15,19 +13,14 @@ namespace Repository
         {
         }
 
-        public AppUser GetAppUserById(Guid id)
+        public async Task<AppUser> FindAppUserByIdAsync(Guid id)
         {
-            return FindAll().FirstOrDefault(u => u.Id == id);
+            return await FindAll().FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public AppUser GetAppUserByUserName(string userName)
+        public async Task<AppUser> FindAppUserByUserNameAsync(string userName)
         {
-            throw new NotImplementedException();
-        }
-
-        public PagedList<AppUser> GetAppUsers(ProductParameters productParameters)
-        {
-            throw new NotImplementedException();
+            return await FindAll().FirstOrDefaultAsync(u => u.UserName == userName);
         }
 
         public void CreateAppUser(AppUser user)

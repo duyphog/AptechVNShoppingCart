@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 using NLog;
 
 namespace Api
@@ -28,15 +29,23 @@ namespace Api
         {
             services.ConfigureCors();
             services.ConfigureLoggerService();
+            services.ConfigureAuthorization();
             services.ConfigureAuthentication(_config);
             services.ConfigureSqlContext(_config);
             services.ConfigureRepositoryWrapper();
             services.ConfigureAppUserService();
             services.ConfigureTokenServices();
+            services.AddHttpContextAccessor();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
-            
 
-            services.AddControllers();
+            services.AddControllers()
+                    .AddNewtonsoftJson(options =>
+                    {
+                        options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                        options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
+                        options.SerializerSettings.DateFormatString = "yyyy'-'MM'-'dd' 'HH':'mm':'ss";
+                    });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
@@ -53,6 +62,8 @@ namespace Api
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api v1"));
             }
 
+            app.ConfigRequestLoggingMiddleware();
+
             app.ConfigCustomExceptionMiddleware();
 
             app.UseHttpsRedirection();
@@ -67,6 +78,8 @@ namespace Api
             });
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

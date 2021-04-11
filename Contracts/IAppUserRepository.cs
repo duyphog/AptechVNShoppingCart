@@ -6,12 +6,10 @@ using Entities.Models;
 namespace Contracts
 {
     public interface IAppUserRepository : IRepositoryBase<AppUser>
-    {
-        PagedList<AppUser> GetAppUsers(ProductParameters productParameters);
+    {      
+        Task<AppUser> FindAppUserByIdAsync(Guid id);
 
-        AppUser GetAppUserById(Guid id);
-
-        AppUser GetAppUserByUserName(string userName);
+        Task<AppUser> FindAppUserByUserNameAsync(string userName);
 
         void CreateAppUser(AppUser user);
 

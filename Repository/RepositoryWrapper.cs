@@ -11,6 +11,8 @@ namespace Repository
 
         private IAppUserRepository _appUser;
 
+        private IAppRoleRepository _appRole;
+
         private IAppUserRoleRepository _appUserRole;
 
         private IProductRepository _product;
@@ -30,6 +32,19 @@ namespace Repository
                 }
 
                 return _appUser;
+            }
+        }
+
+        public IAppRoleRepository AppRole
+        {
+            get
+            {
+                if (_appRole == null)
+                {
+                    _appRole = new AppRoleRepository(_repoContext);
+                }
+
+                return _appRole;
             }
         }
 

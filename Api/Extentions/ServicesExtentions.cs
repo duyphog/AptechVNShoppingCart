@@ -40,6 +40,16 @@ namespace Api.Extentions
             );
         }
 
+        public static void ConfigureAuthorization(this IServiceCollection services)
+        {
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+                opt.AddPolicy("RequireModifyProfile", policy => policy.RequireRole("Admin", "Staff", "Guest"));
+                opt.AddPolicy("RequireBookManager", policy => policy.RequireRole("Admin", "Staff"));
+            });
+        }
+
         public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration config)
         {
             services.AddAuthentication(options =>
@@ -64,7 +74,7 @@ namespace Api.Extentions
                         };
                     });
         }
-
+        
         public static void ConfigureRepositoryWrapper(this IServiceCollection services)
         {
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();

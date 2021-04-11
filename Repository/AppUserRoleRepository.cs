@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Contracts;
 using Entities;
-using Entities.Helpers;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -15,24 +14,24 @@ namespace Repository
         {
         }
 
-        public IEnumerable<AppUserRole> GetAppUserRoleByUserId(Guid userId)
+        public async Task<IEnumerable<AppUserRole>> GetAppUserRoleByUserIdAsync(Guid userId)
         {
-            return FindByCondition(x => x.UserId == userId);
+            return await FindByCondition(x => x.UserId == userId).ToListAsync();
         }
 
         public void CreateAppUserRole(AppUserRole userRole)
         {
-            throw new NotImplementedException();
+            Create(userRole);
         }
 
         public void UpdateAppUserRole(AppUserRole userRole)
         {
-            throw new NotImplementedException();
+            Update(userRole);
         }
 
         public void DeleteAppUserRole(AppUserRole userRole)
         {
-            throw new NotImplementedException();
+            Delete(userRole);
         }
     }
 }
