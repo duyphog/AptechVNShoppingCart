@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Contracts;
 using Entities;
@@ -10,13 +11,19 @@ namespace Repository
 {
     public class AppUserRoleRepository : RepositoryBase<AppUserRole>, IAppUserRoleRepository
     {
-        public AppUserRoleRepository(RepositoryContext context) : base(context)
+        public AppUserRoleRepository(ShoppingCartContext context) : base(context)
         {
         }
 
-        public async Task<IEnumerable<AppUserRole>> GetAppUserRoleByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<AppUserRole>> GetRolesByUserIdAsync(Guid userId)
         {
             return await FindByCondition(x => x.UserId == userId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<AppRole>> GetRolesByUserId(Guid userId)
+        {
+            return await FindAll().Include(x => x.Role).Where(x => x.UserId.Equals(userId))
+                    .Select(x => x.Role).ToListAsync();
         }
 
         public void CreateAppUserRole(AppUserRole userRole)

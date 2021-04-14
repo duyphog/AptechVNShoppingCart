@@ -6,7 +6,6 @@ namespace Contracts
 {
     public interface ITokenService
     {
-        //Task<string> CreateTokenASync(AppUser user);
-        string CreateToken(AppUser user);
+        Task<string> CreateTokenAsync(AppUser user);
     }
 }

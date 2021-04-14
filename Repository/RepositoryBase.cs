@@ -9,36 +9,36 @@ namespace Repository
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        public RepositoryContext RepositoryContext { get; set; }
+        public ShoppingCartContext AppContext { get; set; }
 
-        public RepositoryBase(RepositoryContext context)
+        public RepositoryBase(ShoppingCartContext context)
         {
-            RepositoryContext = context;
+            AppContext = context;
         }
 
         public IQueryable<T> FindAll()
         {
-            return RepositoryContext.Set<T>().AsNoTracking();
+            return AppContext.Set<T>().AsNoTracking();
         }
 
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
         {
-            return RepositoryContext.Set<T>().Where(expression).AsNoTracking();
+            return AppContext.Set<T>().Where(expression).AsNoTracking();
         }
 
         public void Create(T entity)
         {
-            RepositoryContext.Set<T>().Add(entity);
+            AppContext.Set<T>().Add(entity);
         }
 
         public void Update(T entity)
         {
-            RepositoryContext.Set<T>().Update(entity);
+            AppContext.Set<T>().Update(entity);
         }
 
         public void Delete(T entity)
         {
-            RepositoryContext.Set<T>().Remove(entity);
+            AppContext.Set<T>().Remove(entity);
         }
     }
 }

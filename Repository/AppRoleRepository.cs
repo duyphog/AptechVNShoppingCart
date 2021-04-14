@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Contracts;
-using Entities;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +10,7 @@ namespace Repository
 {
     public class AppRoleRepository : RepositoryBase<AppRole>, IAppRoleRepository
     {
-        public AppRoleRepository(RepositoryContext repositoryContext) : base(repositoryContext)
+        public AppRoleRepository(Entities.ShoppingCartContext repositoryContext) : base(repositoryContext)
         {
         }
 
@@ -22,7 +23,6 @@ namespace Repository
         {
             return await FindAll().FirstOrDefaultAsync(r => r.Name == roleName);
         }
-
 
         public void CreateAppRole(AppRole user)
         {

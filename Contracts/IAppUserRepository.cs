@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Entities.Helpers;
 using Entities.Models;
 
 namespace Contracts

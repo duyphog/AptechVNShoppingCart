@@ -7,9 +7,8 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Models\RequestModels\" />
     <Folder Include="Models\ResponseModels\" />
-    <Folder Include="Models\DTOs\" />
+    <Folder Include="Models\DataTransferObjects\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />

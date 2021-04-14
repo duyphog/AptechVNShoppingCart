@@ -57,7 +57,7 @@ namespace Entities.Models
             }
         }
 
-        public static async Task<ProcessResult> RunInTransactionAsync(Func<Task> action, RepositoryContext context)
+        public static async Task<ProcessResult> RunInTransactionAsync(Func<Task> action, ShoppingCartContext context)
         {
             using (var transaction = context.Database.BeginTransaction())
             {
@@ -75,7 +75,7 @@ namespace Entities.Models
             }
         }
 
-        public static async Task<ProcessResult<T>> RunInTransactionAsync<T>(Func<Task<T>> action, RepositoryContext context)
+        public static async Task<ProcessResult<T>> RunInTransactionAsync<T>(Func<Task<T>> action, ShoppingCartContext context)
         {
             using (var transaction = context.Database.BeginTransaction())
             {

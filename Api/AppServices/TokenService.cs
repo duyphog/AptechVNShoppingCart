@@ -24,22 +24,21 @@ namespace Api.AppServices
         }
 
 
-        public string CreateToken(AppUser user)
+        public async Task<string> CreateTokenAsync(AppUser user)
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
+                //new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
+                new Claim("id", user.Id.ToString()),
+                new Claim("name", user.UserName)
             };
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
-            //var roles = await _repoWrapper.AppUserRole.GetAppUserRoleByUserId(user.Id).ToListAsync();
-            var roles = new List<String>
-            {
-                "Member"
-            };
+            var roles = await _repoWrapper.AppUserRole.GetRolesByUserId(user.Id);
 
-            claims.AddRange(roles.Select(x => new Claim(ClaimTypes.Role, x)));
+
+            claims.AddRange(roles.Select(x => new Claim(ClaimTypes.Role, x.Name)));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

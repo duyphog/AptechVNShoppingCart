@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Entities.Models;
-using Entities.Models.DTOs;
-using Entities.Models.RequestModels;
+using Entities.Models.DataTransferObjects;
 using Entities.ResponseModels;
 using Newtonsoft.Json.Linq;
 
@@ -17,11 +16,13 @@ namespace Contracts
 
         Task<ProcessResult<LoginResponse>> LoginAsync(JObject model);
 
-        Task<ProcessResult<LoginResponse>> RegisterAsync(UserRegister model);
+        Task<ProcessResult<LoginResponse>> RegisterAsync(AppUserForRegister user);
 
-        Task<ProcessResult<AppUserDTO>> CreateAsync(UserRegister model);
+        Task<ProcessResult<AppUserDTO>> CreateAsync(AppUserForRegister user);
 
-        Task<ProcessResult<AppUserDTO>> UpdateAsync(UserUpdate model);
+        Task<ProcessResult<AppUserDTO>> UpdateAsync(AppUserForUpdate user);
+
+        Task<ProcessResult<AppUserDTO>> UpdateCurrentUserAsync(AppUserForUpdate user);
 
         Task<ProcessResult> ChangePasswordAsync(JObject model);
 

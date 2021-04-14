@@ -4,11 +4,11 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Api.Extentions;
 using AutoMapper;
 using Contracts;
 using Entities.Models;
-using Entities.Models.DTOs;
-using Entities.Models.RequestModels;
+using Entities.Models.DataTransferObjects;
 using Entities.ResponseModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +16,12 @@ using Newtonsoft.Json.Linq;
 
 namespace Api.AppServices
 {
-    public class AppUserServices : ServiceBase, IAppUserService
+    public class AppUserService : ServiceBase, IAppUserService
     {
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
 
-        public AppUserServices(IHttpContextAccessor httpContextAccessor, IRepositoryWrapper repoWrapper,
+        public AppUserService(IHttpContextAccessor httpContextAccessor, IRepositoryWrapper repoWrapper,
             IMapper mapper, ITokenService tokenService) : base(httpContextAccessor, repoWrapper)
         {
             _mapper = mapper;
@@ -44,11 +44,7 @@ namespace Api.AppServices
 
         public async Task<ProcessResult<AppUserDTO>> FindUserById(Guid id)
         {
-            async Task<AppUserDTO> action()
-            {
-                return _mapper.Map<AppUserDTO>(await _repoWrapper.AppUser.FindAppUserByIdAsync(id));
-            }
-
+            async Task<AppUserDTO> action() => _mapper.Map<AppUserDTO>(await _repoWrapper.AppUser.FindAppUserByIdAsync(id));
             return await Process.RunAsync(action);
         }
 
@@ -64,34 +60,24 @@ namespace Api.AppServices
                     throw new InvalidOperationException("Invalid username");
 
                 using var hmac = new HMACSHA512(user.PasswordSalt);
-
                 var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
 
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    if (computedHash[i] != user.PasswordHash[i])
-                        throw new InvalidOperationException("Invalid password");
-                }
-
-                return new LoginResponse
-                {
-                    Id = user.Id,
-                    UserName = user.UserName,
-                    Token = _tokenService.CreateToken(user)
-                };
+                return computedHash.EqualsByteArray(user.PasswordHash)
+                    ? new LoginResponse { UserName = user.UserName, Token = await _tokenService.CreateTokenAsync(user) }
+                    : throw new InvalidOperationException("Invalid password");
             }
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<LoginResponse>> RegisterAsync(UserRegister model)
+        public async Task<ProcessResult<LoginResponse>> RegisterAsync(AppUserForRegister user)
         {
             async Task<LoginResponse> action()
             {
                 var now = DateTime.Now;
-                var userId = Guid.NewGuid();
+                var newId = Guid.NewGuid();
 
-                var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => u.UserName == model.UserName || u.Email == model.Email).CountAsync();
+                var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => u.UserName.Equals(user.UserName) || u.Email.Equals(user.Email)).CountAsync();
                 if (countUserExists > 0)
                         throw new InvalidOperationException("Username or Email is exists");
 
@@ -100,81 +86,48 @@ namespace Api.AppServices
                 using var hmac = new HMACSHA512();
 
                 var userRoles = new List<AppUserRole>{
-                    new AppUserRole { UserId = userId, RoleId = memberRole.Id }
+                    new AppUserRole { UserId = newId, RoleId = memberRole.Id }
                 };
 
-                var user = new AppUser
+                //var entity = _mapper.Map<AppUser>(user);
+
+                var entity = new AppUser
                 {
-                    Id = userId,
-                    UserName = model.UserName.ToLower(),
-                    Email = model.Email.ToLower(),
-                    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.Password)),
+                    Id = newId,
+                    UserName = user.UserName.ToLower(),
+                    Email = user.Email.ToLower(),
+                    DateOfBirth = user.DateOfBirth,
+                    Gender = user.Gender,
+                    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(user.Password)),
                     PasswordSalt = hmac.Key,
                     Status = true,
                     CreateDate = now,
                     LastActive = now,
-                    CycleCount = 1,
+                    Version = 1,
                     AppUserRoles = userRoles
                 };
 
-                _repoWrapper.AppUser.CreateAppUser(user);
+                _repoWrapper.AppUser.CreateAppUser(entity);
                 await _repoWrapper.SaveAsync();
 
                 return new LoginResponse
                 {
-                    Id = user.Id,
-                    UserName = user.UserName,
-                    Token = _tokenService.CreateToken(user)
+                    UserName = entity.UserName,
+                    Token = await _tokenService.CreateTokenAsync(entity)
                 };
             }
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult> ChangePasswordAsync(JObject model)
-        {
-            async Task action()
-            {
-                var now = DateTime.Now;
-                var passwordOld = model.GetValue("passwordOld").ToString();
-                var passwordNew = model.GetValue("passwordNew").ToString();
-
-                if (passwordOld.Equals(passwordNew))
-                    throw new InvalidOperationException("Password new equals password old");
-
-                var user = CurrentUser;
-                using var hmac = new HMACSHA512(user.PasswordSalt);
-
-                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(passwordOld));
-
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    if (computedHash[i] != user.PasswordHash[i])
-                        throw new InvalidOperationException("Invalid password");
-                }
-
-                using var hmac1 = new HMACSHA512();
-
-                user.PasswordHash = hmac1.ComputeHash(Encoding.UTF8.GetBytes(passwordNew));
-                user.PasswordSalt = hmac1.Key;
-                user.ModifyDate = now;
-                user.CycleCount += 1;
-
-                _repoWrapper.AppUser.UpdateAppUser(user);
-                await _repoWrapper.SaveAsync();
-            }
-
-            return await Process.RunAsync(action);
-        }
-
-        public async Task<ProcessResult<AppUserDTO>> CreateAsync(UserRegister model)
+        public async Task<ProcessResult<AppUserDTO>> CreateAsync(AppUserForRegister model)
         {
             async Task<AppUserDTO> action()
             {
                 var now = DateTime.Now;
-                var userId = Guid.NewGuid();
+                var entityId = Guid.NewGuid();
 
-                var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => u.UserName == model.UserName || u.Email == model.Email).CountAsync();
+                var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => u.UserName.Equals(model.UserName) || u.Email.Equals(model.Email)).CountAsync();
                 if (countUserExists > 0)
                     throw new InvalidOperationException("Username or Email is exists");
 
@@ -189,22 +142,24 @@ namespace Api.AppServices
 
                     model.RoleIds.ToList().ForEach(rId =>
                     {
-                        userRoles.Add(new AppUserRole { UserId = userId, RoleId = rId });
+                        userRoles.Add(new AppUserRole { UserId = entityId, RoleId = rId });
                     });
                 }
 
                 using var hmac = new HMACSHA512();
                 var user = new AppUser
                 {
-                    Id = userId,
+                    Id = entityId,
                     UserName = model.UserName.ToLower(),
                     Email = model.Email.ToLower(),
+                    DateOfBirth = model.DateOfBirth,
+                    Gender = model.Gender,
                     PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("12345678")),
                     PasswordSalt = hmac.Key,
                     Status = true,
                     CreateDate = now,
                     LastActive = now,
-                    CycleCount = 1,
+                    Version = 1,
                     AppUserRoles = userRoles
                 };
 
@@ -217,25 +172,84 @@ namespace Api.AppServices
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<AppUserDTO>> UpdateAsync(UserUpdate model)
+        public async Task<ProcessResult<AppUserDTO>> UpdateAsync(AppUserForUpdate model)
         {
             async Task<AppUserDTO> action()
             {
                 var now = DateTime.Now;
-                var user = await _repoWrapper.AppUser.FindAppUserByIdAsync(model.Id);
+                var entity = await _repoWrapper.AppUser.FindAppUserByIdAsync(model.Id);
 
-                var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => u.Email == model.Email).CountAsync();
+                var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => !u.Id.Equals(model.Id) && u.Email.Equals(model.Email)).CountAsync();
                 if (countUserExists > 0)
                     throw new InvalidOperationException("Email is exists");
 
-                user.Email = model.Email;
+                var user = _mapper.Map(model, entity);
                 user.ModifyDate = now;
-                user.CycleCount += 1;
+                user.Version += 1;
 
                 _repoWrapper.AppUser.UpdateAppUser(user);
                 await _repoWrapper.SaveAsync();
 
                 return _mapper.Map<AppUserDTO>(user);
+            }
+
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult<AppUserDTO>> UpdateCurrentUserAsync(AppUserForUpdate model)
+        {
+            async Task<AppUserDTO> action()
+            {
+                var now = DateTime.Now;
+
+                var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => u.Id != model.Id && u.Email == model.Email).CountAsync();
+                if (countUserExists > 0)
+                    throw new InvalidOperationException("Email is exists");
+           
+                var user = _mapper.Map(model, CurrentUser);
+                user.ModifyDate = now;
+                user.Version += 1;
+
+                _repoWrapper.AppUser.UpdateAppUser(user);
+                await _repoWrapper.SaveAsync();
+
+                return _mapper.Map<AppUserDTO>(user);
+            }
+
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult> ChangePasswordAsync(JObject model)
+        {
+            async Task action()
+            {
+                var now = DateTime.Now;
+                var passwordOld = model.GetValue("passwordOld").ToString();
+                var passwordNew = model.GetValue("passwordNew").ToString();
+
+                if (passwordOld.Equals(passwordNew))
+                {
+                    throw new InvalidOperationException("Password new equals password old");
+                }
+
+                using HMACSHA512 hmac = new(CurrentUser.PasswordSalt);
+
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(passwordOld));
+
+                if (!computedHash.EqualsByteArray(CurrentUser.PasswordHash))
+                {
+                    throw new InvalidOperationException("Invalid password");
+                }
+
+                using HMACSHA512 hmac1 = new();
+
+                CurrentUser.PasswordHash = hmac1.ComputeHash(Encoding.UTF8.GetBytes(passwordNew));
+                CurrentUser.PasswordSalt = hmac1.Key;
+                CurrentUser.ModifyDate = now;
+                CurrentUser.Version += 1;
+
+                _repoWrapper.AppUser.UpdateAppUser(CurrentUser);
+                await _repoWrapper.SaveAsync();
             }
 
             return await Process.RunAsync(action);
@@ -254,7 +268,7 @@ namespace Api.AppServices
 
                 user.Status = false;
                 user.ModifyDate = DateTime.Now;
-                user.CycleCount += 1;
+                user.Version += 1;
 
                 _repoWrapper.AppUser.UpdateAppUser(user);
                 await _repoWrapper.SaveAsync();

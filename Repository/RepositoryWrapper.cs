@@ -7,7 +7,7 @@ namespace Repository
 {
     public class RepositoryWrapper : IRepositoryWrapper
     {
-        private RepositoryContext _repoContext;
+        private readonly ShoppingCartContext _context;
 
         private IAppUserRepository _appUser;
 
@@ -17,9 +17,9 @@ namespace Repository
 
         private IProductRepository _product;
 
-        public RepositoryWrapper(RepositoryContext repositoryContext)
+        public RepositoryWrapper(ShoppingCartContext context)
         {
-            _repoContext = repositoryContext;
+            _context = context;
         }
 
         public IAppUserRepository AppUser
@@ -28,7 +28,7 @@ namespace Repository
             {
                 if (_appUser == null)
                 {
-                    _appUser = new AppUserRepository(_repoContext);
+                    _appUser = new AppUserRepository(_context);
                 }
 
                 return _appUser;
@@ -41,7 +41,7 @@ namespace Repository
             {
                 if (_appRole == null)
                 {
-                    _appRole = new AppRoleRepository(_repoContext);
+                    _appRole = new AppRoleRepository(_context);
                 }
 
                 return _appRole;
@@ -54,7 +54,7 @@ namespace Repository
             {
                 if (_appUserRole == null)
                 {
-                    _appUserRole = new AppUserRoleRepository(_repoContext);
+                    _appUserRole = new AppUserRoleRepository(_context);
                 }
 
                 return _appUserRole;
@@ -67,14 +67,14 @@ namespace Repository
             {
                 if (_product == null)
                 {
-                    _product = new ProductRepository(_repoContext);
+                    _product = new ProductRepository(_context);
                 }
 
                 return _product;
             }
         }
 
-        public async Task SaveAsync() => await _repoContext.SaveChangesAsync();
+        public async Task SaveAsync() => await _context.SaveChangesAsync();
         
     }
 }

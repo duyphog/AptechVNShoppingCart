@@ -7,11 +7,33 @@ namespace Entities.Models
 {
     public partial class Product
     {
-        public int Id { get; set; }
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public int? ProductTypeId { get; set; }
+        public Product()
+        {
+            ProductPhotos = new HashSet<ProductPhoto>();
+            ProductReturnRequestDetails = new HashSet<ProductReturnRequestDetail>();
+            SalesOrderDetails = new HashSet<SalesOrderDetail>();
+        }
 
-        public virtual ProductType ProductType { get; set; }
+        public string Id { get; set; }
+        public string ProductName { get; set; }
+        public string ShortDescription { get; set; }
+        public string LongDescription { get; set; }
+        public int? Stock { get; set; }
+        public decimal Price { get; set; }
+        public string Origin { get; set; }
+        public string CategoryId { get; set; }
+        public bool? Unlimited { get; set; }
+        public string Location { get; set; }
+        public int? WarrantyPeriod { get; set; }
+        public bool? Status { get; set; }
+        public string CreateBy { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public string ModifyBy { get; set; }
+        public DateTime? ModifyDate { get; set; }
+
+        public virtual Category Category { get; set; }
+        public virtual ICollection<ProductPhoto> ProductPhotos { get; set; }
+        public virtual ICollection<ProductReturnRequestDetail> ProductReturnRequestDetails { get; set; }
+        public virtual ICollection<SalesOrderDetail> SalesOrderDetails { get; set; }
     }
 }

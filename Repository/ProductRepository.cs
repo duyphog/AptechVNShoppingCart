@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Contracts;
-using Entities;
 using Entities.Helpers;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
     public class ProductRepository : RepositoryBase<Product>, IProductRepository
     {
-        public ProductRepository(RepositoryContext repositoryContext) : base(repositoryContext)
+        public ProductRepository(Entities.ShoppingCartContext repositoryContext) : base(repositoryContext)
         {
         }
 
@@ -25,7 +22,8 @@ namespace Repository
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-            return await FindByCondition(p => p.Id == id).FirstOrDefaultAsync();
+            //return await FindByCondition(1==1).FirstOrDefaultAsync();
+            return null;
         }
 
 

@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Entities.Models.DTOs
+namespace Entities.Models.DataTransferObjects
 {
     public class AppRoleDTO
     {

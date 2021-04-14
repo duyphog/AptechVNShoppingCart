@@ -35,7 +35,7 @@ namespace Api.Extentions
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration config)
         {
             var connectionString = config["ConnectionStrings:DefaultSqlConnection"];
-            services.AddDbContext<RepositoryContext>(options => options
+            services.AddDbContext<ShoppingCartContext>(options => options
                     .UseSqlServer(connectionString)
             );
         }
@@ -82,7 +82,7 @@ namespace Api.Extentions
 
         public static void ConfigureAppUserService(this IServiceCollection services)
         {
-            services.AddTransient<IAppUserService, AppUserServices>();
+            services.AddTransient<IAppUserService, AppUserService>();
         }
 
         public static void ConfigureTokenServices(this IServiceCollection services)

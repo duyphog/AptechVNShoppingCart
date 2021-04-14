@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Contracts;
-using Entities;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +8,7 @@ namespace Repository
 {
     public class AppUserRepository : RepositoryBase<AppUser>, IAppUserRepository
     {
-        public AppUserRepository(RepositoryContext repositoryContext) : base(repositoryContext)
+        public AppUserRepository(Entities.ShoppingCartContext repositoryContext) : base(repositoryContext)
         {
         }
 

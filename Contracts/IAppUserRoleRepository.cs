@@ -7,7 +7,9 @@ namespace Contracts
 {
     public interface IAppUserRoleRepository : IRepositoryBase<AppUserRole>
     {
-        Task<IEnumerable<AppUserRole>> GetAppUserRoleByUserIdAsync(Guid userId);
+        Task<IEnumerable<AppUserRole>> GetRolesByUserIdAsync(Guid userId);
+
+        Task<IEnumerable<AppRole>> GetRolesByUserId(Guid userId);
 
         void CreateAppUserRole(AppUserRole userRole);
 
