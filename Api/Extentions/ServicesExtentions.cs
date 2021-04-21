@@ -89,5 +89,10 @@ namespace Api.Extentions
         {
             services.AddScoped<ITokenService, TokenService>();
         }
+
+        public static void ConfigureProductServices(this IServiceCollection services)
+        {
+            services.AddTransient<IProductService, ProductService>();
+        }
     }
 }

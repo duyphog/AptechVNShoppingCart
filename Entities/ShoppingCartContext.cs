@@ -2,6 +2,7 @@
 using System.IO;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Entities
 {
@@ -15,7 +16,7 @@ namespace Entities
         public virtual DbSet<AppUser> AppUsers { get; set; }
         public virtual DbSet<AppUserRole> AppUserRoles { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
-        public virtual DbSet<ContactU> ContactUs { get; set; }
+        public virtual DbSet<ContactUs> ContactUs { get; set; }
         public virtual DbSet<Delivery> Deliveries { get; set; }
         public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
         public virtual DbSet<PaidDetail> PaidDetails { get; set; }
@@ -28,9 +29,14 @@ namespace Entities
         public virtual DbSet<SalesOrderDetail> SalesOrderDetails { get; set; }
         public virtual DbSet<UserAddress> UserAddresses { get; set; }
 
+        public static readonly ILoggerFactory loggerFactory = LoggerFactory.Create(builder => {
+            builder.AddFilter(DbLoggerCategory.Query.Name, LogLevel.Information)
+                   .AddConsole();
+        });
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.LogTo(WriteLogToFile);
+            optionsBuilder.UseLoggerFactory(loggerFactory);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -126,7 +132,7 @@ namespace Entities
                 entity.Property(e => e.Status).HasDefaultValueSql("((1))");
             });
 
-            modelBuilder.Entity<ContactU>(entity =>
+            modelBuilder.Entity<ContactUs>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
@@ -568,15 +574,5 @@ namespace Entities
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-
-        private async void WriteLogToFile(string str)
-        {
-            var path = $"/Users/phongnd/Desktop/Aptech/Logs/datalogs/context_log.txt";
-
-            using var streamWriter = File.AppendText(path);
-            await streamWriter.WriteLineAsync(str);
-        }
-
     }
 }

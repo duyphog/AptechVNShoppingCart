@@ -31,7 +31,20 @@ namespace Api.Controllers
             if (result.Succeed == false)
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Register fail", result.Errors));
 
-            return Ok(new AppResponse<LoginResponse>(result.Value));
+            return Ok(result.Value);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("genders")]
+        public ActionResult<IEnumerable<Gender>> GetGender()
+        {
+            var genders = new List<Gender>
+            {
+                new Gender { Id = -1, Value= "UnKnown"},
+                new Gender { Id = 0, Value= "Male"},
+                new Gender { Id = 1, Value= "Female"},
+            };
+            return Ok(genders);
         }
 
         [AllowAnonymous]
@@ -43,7 +56,7 @@ namespace Api.Controllers
             if (result.Succeed == false)
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Login fail", result.Errors));
 
-            return Ok(new AppResponse<LoginResponse>(result.Value));
+            return Ok(result.Value);
         }
 
         [HttpGet("{id}")]
@@ -54,7 +67,7 @@ namespace Api.Controllers
             if (result.Succeed == false)
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
 
-            return Ok(new AppResponse<AppUserDTO>(result.Value));
+            return Ok(result.Value);
         }
 
         [Authorize(Policy = "RequireAdminRole")]
@@ -66,7 +79,7 @@ namespace Api.Controllers
             if (result.Succeed == false)
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
 
-            return Ok(new AppResponse<IEnumerable<AppUserDTO>>(result.Value));
+            return Ok(result.Value);
         }
 
         [HttpPut("change-password")]
@@ -94,7 +107,7 @@ namespace Api.Controllers
             if (result.Succeed == false)
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
 
-            return Ok(new AppResponse<AppUserDTO>(result.Value));
+            return Ok(result.Value);
         }
     } 
 }

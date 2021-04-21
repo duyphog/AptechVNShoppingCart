@@ -108,7 +108,11 @@ namespace Api.AppServices
                 };
 
                 _repoWrapper.AppUser.CreateAppUser(entity);
-                await _repoWrapper.SaveAsync();
+                var rows = await _repoWrapper.SaveAsync();
+                if(rows <= 0)
+                {
+                    throw new InvalidOperationException("Save fail");
+                }
 
                 return new LoginResponse
                 {
@@ -164,7 +168,11 @@ namespace Api.AppServices
                 };
 
                 _repoWrapper.AppUser.CreateAppUser(user);
-                await _repoWrapper.SaveAsync();
+                var rows = await _repoWrapper.SaveAsync();
+                if (rows <= 0)
+                {
+                    throw new InvalidOperationException("Save fail");
+                }
 
                 return _mapper.Map<AppUserDTO>(user);
             }
@@ -188,7 +196,11 @@ namespace Api.AppServices
                 user.Version += 1;
 
                 _repoWrapper.AppUser.UpdateAppUser(user);
-                await _repoWrapper.SaveAsync();
+                var rows = await _repoWrapper.SaveAsync();
+                if (rows <= 0)
+                {
+                    throw new InvalidOperationException("Save fail");
+                }
 
                 return _mapper.Map<AppUserDTO>(user);
             }
@@ -211,7 +223,11 @@ namespace Api.AppServices
                 user.Version += 1;
 
                 _repoWrapper.AppUser.UpdateAppUser(user);
-                await _repoWrapper.SaveAsync();
+                var rows = await _repoWrapper.SaveAsync();
+                if (rows <= 0)
+                {
+                    throw new InvalidOperationException("Save fail");
+                }
 
                 return _mapper.Map<AppUserDTO>(user);
             }
@@ -249,7 +265,11 @@ namespace Api.AppServices
                 CurrentUser.Version += 1;
 
                 _repoWrapper.AppUser.UpdateAppUser(CurrentUser);
-                await _repoWrapper.SaveAsync();
+                var rows = await _repoWrapper.SaveAsync();
+                if (rows <= 0)
+                {
+                    throw new InvalidOperationException("Save fail");
+                }
             }
 
             return await Process.RunAsync(action);
@@ -271,7 +291,11 @@ namespace Api.AppServices
                 user.Version += 1;
 
                 _repoWrapper.AppUser.UpdateAppUser(user);
-                await _repoWrapper.SaveAsync();
+                var rows = await _repoWrapper.SaveAsync();
+                if (rows <= 0)
+                {
+                    throw new InvalidOperationException("Save fail");
+                }
             }
 
             return await Process.RunAsync(action);

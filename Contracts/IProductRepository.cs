@@ -8,14 +8,7 @@ namespace Contracts
 {
     public interface IProductRepository : IRepositoryBase<Product>
     {
-        Task<PagedList<Product>> GetAllProductAsync(ProductParameters productParameters);
-
-        Task<Product> GetProductByIdAsync(int id);
-
-        void CreateProduct(Product product);
-
-        void UpdateProduct(Product product);
-
-        void DeleteProduct(Product product);
+        Task<Product> GetProductByIdAsync(string id);
+        Task<PagedList<Product>> GetAllProduct(ProductParameters parameters);
     }
 }

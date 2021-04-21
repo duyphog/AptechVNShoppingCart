@@ -6,13 +6,15 @@ namespace Contracts
     public interface IRepositoryWrapper
     {
         IAppUserRepository AppUser { get; }
-
         IAppUserRoleRepository AppUserRole { get; }
-
         IAppRoleRepository AppRole { get; }
-
         IProductRepository Product { get; }
-
-        Task SaveAsync();
+        IProductPhotoRepository ProductPhoto { get; }
+        ICategoryRepository Category { get; }
+        IPaymentTypeRepository PaymentType { get; }
+        IOrderStatusRepository OrderStatus { get; }
+        IContactUsRepository ContactUs { get; }
+        ISalesOrderRepository SalesOrder { get; }
+        Task<int> SaveAsync();
     }
 }

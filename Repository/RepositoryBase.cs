@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Contracts;
@@ -23,7 +24,7 @@ namespace Repository
 
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
         {
-            return AppContext.Set<T>().Where(expression).AsNoTracking();
+            return AppContext.Set<T>().Where(expression);
         }
 
         public void Create(T entity)
@@ -40,5 +41,15 @@ namespace Repository
         {
             AppContext.Set<T>().Remove(entity);
         }
+
+        public void AddRange(List<T> entities)
+        {
+            AppContext.AddRange(entities);
+        }
+
+        //public void SetNewValueEntry(T entityOld, T entityNew)
+        //{
+        //    AppContext.Entry(entityOld).CurrentValues.SetValues(entityNew);
+        //}
     }
 }

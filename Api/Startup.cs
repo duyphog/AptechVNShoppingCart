@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Api.Extentions;
 using Api.Helpers;
+using Entities.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -36,16 +37,19 @@ namespace Api
             services.ConfigureAppUserService();
             services.ConfigureTokenServices();
             services.AddHttpContextAccessor();
+            services.ConfigureProductServices();
+
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
             services.AddControllers()
                     .AddNewtonsoftJson(options =>
                     {
-                        options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                         options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
                         options.SerializerSettings.DateFormatString = "yyyy'-'MM'-'dd' 'HH':'mm':'ss";
                     });
 
+            services.Configure<CloudinarySettings>(_config.GetSection("CloudinarySettings"));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });

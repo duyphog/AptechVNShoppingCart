@@ -16,12 +16,12 @@ namespace Repository
 
         public async Task<AppRole> FindAppRoleById(Guid id)
         {
-            return await FindAll().FirstOrDefaultAsync(r => r.Id == id);
+            return await FindByCondition(r => r.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<AppRole> FindAppRoleByName(string roleName)
         {
-            return await FindAll().FirstOrDefaultAsync(r => r.Name == roleName);
+            return await FindByCondition(r => r.Name == roleName).FirstOrDefaultAsync();
         }
 
         public void CreateAppRole(AppRole user)

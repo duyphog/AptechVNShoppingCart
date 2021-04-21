@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Contracts;
 using Entities.Helpers;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -13,33 +14,27 @@ namespace Repository
         {
         }
 
-        public async Task<PagedList<Product>> GetAllProductAsync(ProductParameters productParameters)
+        public async Task<Product> GetProductByIdAsync(string id)
         {
-            var queries = FindAll().OrderBy(p => p.Id).AsQueryable();
-
-            return await PagedList<Product>.ToPagedList(queries, productParameters.PageNumber, productParameters.PageSize);
+            return await FindByCondition(p => p.Id == id)
+                .Include(p => p.Category)
+                .Include(p => p.ProductPhotos)
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<PagedList<Product>> GetAllProduct(ProductParameters parameters)
         {
-            //return await FindByCondition(1==1).FirstOrDefaultAsync();
-            return null;
-        }
+             var queries = FindAll()
+                    .Include(p => p.Category)
+                    .Include(p => p.ProductPhotos)
+                    .AsQueryable();
 
-
-        public void CreateProduct(Product product)
-        {
-            Create(product);
-        }
-
-        public void DeleteProduct(Product product)
-        {
-            Update(product);
-        }
-
-        public void UpdateProduct(Product product)
-        {
-            Delete(product);
+            //if (!String.IsNullOrEmpty(parameters.Fields))
+            //{
+            //    queries += queries.
+            //}
+            queries = queries.OrderBy(p => p.Id);
+            return await PagedList<Product>.ToPagedList(queries, parameters.PageNumber, parameters.PageSize);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Api.AdminControllers
             if (result.Succeed == false)
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Register fail", result.Errors));
 
-            return Ok(new AppResponse<AppUserDTO>(result.Value));
+            return Ok(result.Value);
         }
 
         [HttpDelete("{id}")]
@@ -51,7 +51,7 @@ namespace Api.AdminControllers
             if (result.Succeed == false)
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
 
-            return Ok(new AppResponse<AppUserDTO>(result.Value));
+            return Ok(result.Value);
         }
 
     }

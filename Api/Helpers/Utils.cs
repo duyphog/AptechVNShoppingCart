@@ -5,9 +5,9 @@ namespace Api.Helpers
     {
         public enum Gender
         {
-            Unknown,
-            Female,
-            Male
+            Unknown = -1,
+            Male = 0,
+            Female = 1
         }
     }
 }
