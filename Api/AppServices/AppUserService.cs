@@ -60,7 +60,7 @@ namespace Api.AppServices
                 var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
 
                 return computedHash.EqualsByteArray(user.PasswordHash)
-                    ? new LoginResponse { UserName = user.UserName, Token = await _tokenService.CreateTokenAsync(user) }
+                    ? new LoginResponse { UserName = user.UserName, Token = await _tokenService.CreateTokenAsync(user), Roles = user.AppUserRoles.Select(x => x.Role.Name).ToArray() }
                     : throw new InvalidOperationException("Invalid password");
             }
 
@@ -78,7 +78,8 @@ namespace Api.AppServices
                 if (countUserExists > 0)
                         throw new InvalidOperationException("Username or Email is exists");
 
-                var memberRole = await _repoWrapper.AppRole.FindAppRoleByName("Member");
+                const string registerRoleName = "Member";
+                var memberRole = await _repoWrapper.AppRole.FindAppRoleByName(registerRoleName);
 
                 using var hmac = new HMACSHA512();
 
@@ -106,7 +107,7 @@ namespace Api.AppServices
                 _repoWrapper.AppUser.Create(user);
 
                 return await _repoWrapper.SaveAsync() > 0
-                    ? new LoginResponse {  UserName = user.UserName, Token = await _tokenService.CreateTokenAsync(user)}
+                    ? new LoginResponse { UserName = user.UserName, Token = await _tokenService.CreateTokenAsync(user), Roles = new string[] { registerRoleName } }
                     : throw new InvalidOperationException("Save fail");
                   
             }

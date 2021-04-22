@@ -35,7 +35,7 @@ namespace Repository
 
         public async Task<AppUser> FindAppUserByUserNameAsync(string userName)
         {
-            return await FindByCondition(u => u.UserName == userName).FirstOrDefaultAsync();
+            return await FindByCondition(u => u.UserName == userName).Include(x=>x.AppUserRoles).ThenInclude(x=>x.Role).FirstOrDefaultAsync();
         }
     }
 }
