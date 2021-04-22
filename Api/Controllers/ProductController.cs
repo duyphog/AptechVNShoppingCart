@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Api.Extentions;
@@ -38,11 +39,6 @@ namespace Api.Controllers
             if (products.TotalCount == 0)
                 return NoContent();
 
-            if (products.CurrentPages > products.TotalPages)
-            {
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "CurrentPages > TotalPages"));
-            }
-
             Response.AddPagination(products.TotalCount, products.PageSize, products.CurrentPages,
                                     products.TotalPages, products.HasPrevious, products.HasNext);
 
@@ -58,20 +54,20 @@ namespace Api.Controllers
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
             }
 
-            if (result.Value == null)
-                return NoContent();
-
-            return Ok(result.Value);
+            return result.Value != null ? Ok(result.Value) : NotFound(new ErrorResponse(HttpStatusCode.BadRequest, "Warning", "Not exist value"));
         }
 
         [HttpPost]
         public async Task<ActionResult<ProductDTO>> CreateProductAsync(ProductForCreate model)
         {
-            var result = await _productService.CreateProductAsync(model);
-            if(!result.Succeed)
-               return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Create fail", result.Errors));
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Validation error", errors));
+            }
 
-            return Ok(result.Value);
+            var result = await _productService.CreateProductAsync(model);
+            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Create fail", result.Errors));
         }
 
         [HttpPut("{id}")]
@@ -82,11 +78,14 @@ namespace Api.Controllers
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Id Invalid"));
             }
 
-            var result = await _productService.UpdateProductAsync(model);
-            if(!result.Succeed)
-               return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Validation error", errors));
+            }
 
-            return Ok(result.Value);
+            var result = await _productService.UpdateProductAsync(model);
+            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
         }
 
         [HttpDelete("{id}")]
@@ -94,10 +93,7 @@ namespace Api.Controllers
         {
             var result = await _productService.DeleteProductAsync(id);
 
-            if (!result.Succeed)
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Delete fail", result.Errors));
-
-            return NoContent();
+            return result.Succeed ? NoContent() : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Delete fail", result.Errors));
         }
 
         [HttpPost("photo/{id}")]
@@ -105,10 +101,7 @@ namespace Api.Controllers
         {
             var result = await _productService.UploadPhotosAsync(id, files);
 
-            if (!result.Succeed)
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Upload fail", result.Errors));
-
-            return Ok(result.Value);
+            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Upload fail", result.Errors));
         }
 
         [HttpDelete("photo/{id}")]
@@ -116,10 +109,7 @@ namespace Api.Controllers
         {
             var result = await _productService.DeleteProductPhotoAsync(id);
 
-            if (!result.Succeed)
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Delete fail", result.Errors));
-
-            return NoContent();
+            return result.Succeed ? NoContent() : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Delete fail", result.Errors));
         }
     }
 }

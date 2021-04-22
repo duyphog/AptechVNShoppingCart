@@ -23,20 +23,5 @@ namespace Repository
         {
             return await FindByCondition(r => r.Name == roleName).FirstOrDefaultAsync();
         }
-
-        public void CreateAppRole(AppRole user)
-        {
-            Create(user);
-        }
-
-        public void UpdateAppRole(AppRole user)
-        {
-            Update(user);
-        }
-
-        public void DeleteAppRole(AppRole user)
-        {
-            Delete(user);
-        }
     }
 }

@@ -33,11 +33,13 @@ namespace Api
             services.ConfigureAuthorization();
             services.ConfigureAuthentication(_config);
             services.ConfigureSqlContext(_config);
-            services.ConfigureRepositoryWrapper();
-            services.ConfigureAppUserService();
-            services.ConfigureTokenServices();
             services.AddHttpContextAccessor();
+            services.ConfigureRepositoryWrapper();
+            services.ConfigureAppUserServices();
+            services.ConfigureTokenServices();
             services.ConfigureProductServices();
+            services.ConfigureCloudDinaryServices(_config);
+            services.ConfigureCategoryServices();
 
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
@@ -47,6 +49,9 @@ namespace Api
                         options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                         options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
                         options.SerializerSettings.DateFormatString = "yyyy'-'MM'-'dd' 'HH':'mm':'ss";
+                    })
+                    .ConfigureApiBehaviorOptions(options => {
+                        options.SuppressModelStateInvalidFilter = true;
                     });
 
             services.Configure<CloudinarySettings>(_config.GetSection("CloudinarySettings"));

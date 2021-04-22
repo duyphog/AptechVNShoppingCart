@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Contracts;
+using Entities.Helpers;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,29 +14,28 @@ namespace Repository
         {
         }
 
+        public Task<PagedList<AppUser>> FindAllAppUserAsync(AppUserParameters parameters)
+        {
+            var queries = FindAll().Include(u => u.AppUserRoles).ThenInclude(ur => ur.Role).AsQueryable();
+
+            if(parameters.RoleID != null)
+            {
+                //queries = queries.Where(u => u.AppUserRoles.Where(ur => ur.RoleId == parameters.RoleID));
+            }
+
+            queries = queries.OrderByDescending(x => x.CreateDate);
+
+            return PagedList<AppUser>.ToPagedList(queries, parameters.PageNumber, parameters.PageSize);
+        }
+
         public async Task<AppUser> FindAppUserByIdAsync(Guid id)
         {
-            return await FindAll().FirstOrDefaultAsync(u => u.Id == id);
+            return await FindByCondition(u => u.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<AppUser> FindAppUserByUserNameAsync(string userName)
         {
-            return await FindAll().FirstOrDefaultAsync(u => u.UserName == userName);
-        }
-
-        public void CreateAppUser(AppUser user)
-        {
-            Create(user);
-        }
-
-        public void UpdateAppUser(AppUser user)
-        {
-            Update(user);
-        }
-
-        public void DeleteAppUser(AppUser user)
-        {
-            Delete(user);
+            return await FindByCondition(u => u.UserName == userName).FirstOrDefaultAsync();
         }
     }
 }

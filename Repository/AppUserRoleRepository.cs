@@ -25,20 +25,5 @@ namespace Repository
             return await FindAll().Include(x => x.Role).Where(x => x.UserId.Equals(userId))
                     .Select(x => x.Role).ToListAsync();
         }
-
-        public void CreateAppUserRole(AppUserRole userRole)
-        {
-            Create(userRole);
-        }
-
-        public void UpdateAppUserRole(AppUserRole userRole)
-        {
-            Update(userRole);
-        }
-
-        public void DeleteAppUserRole(AppUserRole userRole)
-        {
-            Delete(userRole);
-        }
     }
 }

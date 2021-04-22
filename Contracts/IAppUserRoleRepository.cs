@@ -10,11 +10,5 @@ namespace Contracts
         Task<IEnumerable<AppUserRole>> GetRolesByUserIdAsync(Guid userId);
 
         Task<IEnumerable<AppRole>> GetRolesByUserId(Guid userId);
-
-        void CreateAppUserRole(AppUserRole userRole);
-
-        void UpdateAppUserRole(AppUserRole userRole);
-
-        void DeleteAppUserRole(AppUserRole userRole);
     }
 }

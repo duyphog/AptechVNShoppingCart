@@ -11,7 +11,8 @@ namespace Api.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<AppUserForRegister, AppUser>();
-            CreateMap<AppUser, AppUserDTO>();
+            CreateMap<AppUser, AppUserDTO>()
+                .ForMember(d => d.Roles, opt => opt.MapFrom(s => s.AppUserRoles.Select(x=> x.Role)));
 
             CreateMap<AppRole, AppRoleDTO>();
             CreateMap<AppUserForUpdate, AppUser>();

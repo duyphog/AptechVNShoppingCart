@@ -7,8 +7,6 @@ using Contracts;
 using Entities.Models;
 using Entities.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 
 namespace Api.AppServices
 {
@@ -55,12 +53,12 @@ namespace Api.AppServices
                     throw new InvalidOperationException($"Id is exist, category Name: {entity.Name}");
 
                 var cartg = _mapper.Map<Category>(model);
-                _repoWrapper.Category.Create(cartg);
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
-                    throw new Exception("Save fail");
+                cartg.Status = true;
+                cartg.CreateBy = CurrentUser.UserName;
+                cartg.CreateDate = DateTime.UtcNow;
 
-                return _mapper.Map<CategoryDTO>(cartg);
+                _repoWrapper.Category.Create(cartg);
+                return await _repoWrapper.SaveAsync() <= 0 ? throw new Exception("Save fail") : _mapper.Map<CategoryDTO>(cartg);
             }
 
             return await Process.RunAsync(acction);
@@ -71,22 +69,20 @@ namespace Api.AppServices
         {
             async Task<CategoryDTO> acction()
             {
-                var entity = await _repoWrapper.Category.FindById(model.Id);
-                if(entity == null)
+                var category = await _repoWrapper.Category.FindById(model.Id);
+                if(category == null)
                 {
                     throw new InvalidOperationException("Id is not exist");
                 }
 
-                var category = _mapper.Map(model, entity);
+                _ = _mapper.Map(model, category);
+
                 category.ModifyBy = CurrentUser.UserName;
-                category.ModifyDate = DateTime.Now;
+                category.ModifyDate = DateTime.UtcNow;
 
                 _repoWrapper.Category.Update(category);
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
-                    throw new Exception("Save fail");
-
-                return _mapper.Map<CategoryDTO>(entity);
+ 
+                return await _repoWrapper.SaveAsync() <= 0 ? throw new Exception("Save fail") : _mapper.Map<CategoryDTO>(category);
             }
 
             return await Process.RunAsync(acction);
@@ -99,13 +95,14 @@ namespace Api.AppServices
                 var category = await _repoWrapper.Category.FindById(id);
                 if (category == null)
                     throw new InvalidOperationException("Id is not exist");
+                if(category.Status == false)
+                    throw new InvalidOperationException("Current status is false");
 
                 category.Status = false;
-                category.ModifyDate = DateTime.Now;
+                category.ModifyDate = DateTime.UtcNow;
                 category.ModifyBy = CurrentUser.UserName;
 
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
+                if (await _repoWrapper.SaveAsync() <= 0)
                     throw new Exception("Save fail");
             }
             return await Process.RunAsync(action);

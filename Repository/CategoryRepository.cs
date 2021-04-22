@@ -22,7 +22,7 @@ namespace Repository
 
         public async Task<Category> FindById(string id)
         {
-            return await FindByCondition(x => x.Id == id).FirstOrDefaultAsync();
+            return await FindByCondition(x => x.Id == id).AsNoTracking().FirstOrDefaultAsync();
         }
     }
 }

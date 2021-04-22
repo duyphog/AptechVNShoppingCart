@@ -11,11 +11,5 @@ namespace Contracts
         Task<AppRole> FindAppRoleById(Guid id);
 
         Task<AppRole> FindAppRoleByName(string roleName);
-
-        void CreateAppRole(AppRole user);
-                   
-        void UpdateAppRole(AppRole user);
-                   
-        void DeleteAppRole(AppRole user);
     }
 }

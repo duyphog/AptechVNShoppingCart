@@ -29,6 +29,10 @@ namespace Api.AppServices
             async Task<PagedList<ProductDTO>> action()
             {
                 var products = await _repoWrapper.Product.GetAllProduct(parameters);
+
+                if (products.CurrentPages > products.TotalPages)
+                    throw new Exception("CurrentPages > TotalPages");
+
                 return new PagedList<ProductDTO>(_mapper.Map<List<Product>, List<ProductDTO>>(products),
                     products.Count, products.CurrentPages, products.PageSize);
             }
@@ -63,12 +67,8 @@ namespace Api.AppServices
                 product.Status = true;
 
                 _repoWrapper.Product.Create(product);
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
-                    throw new InvalidCastException("Save fail");
-
-                return _mapper.Map<ProductDTO>(product);
-            }
+                return await _repoWrapper.SaveAsync() > 0 ? _mapper.Map<ProductDTO>(product) : throw new InvalidCastException("Save fail");
+        }
             return await Process.RunAsync(action);
         }
 
@@ -86,8 +86,8 @@ namespace Api.AppServices
                 product.ModifyBy = CurrentUser.UserName;
 
                 _repoWrapper.Product.Update(product);
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
+
+                if (await _repoWrapper.SaveAsync() <= 0)
                     throw new InvalidOperationException("Save Fail");
             }
             return await Process.RunAsync(action);
@@ -97,18 +97,14 @@ namespace Api.AppServices
         {
             async Task<ProductDTO> action()
             {
-                var entity = await _repoWrapper.Product.GetProductByIdAsync(model.Id);
-                if (entity == null)
+                var product = await _repoWrapper.Product.GetProductByIdAsync(model.Id);
+                if (product == null)
                     throw new InvalidOperationException("Id is not exist");
 
-                var product = _mapper.Map(model, entity);
+                _ = _mapper.Map(model, product);
 
                 _repoWrapper.Product.Update(product);
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
-                    throw new InvalidCastException("Save fail");
-
-                return _mapper.Map<ProductDTO>(product);
+                return await _repoWrapper.SaveAsync() > 0 ? _mapper.Map<ProductDTO>(product) : throw new InvalidCastException("Save fail");
             }
 
             return await Process.RunAsync(action);
@@ -162,24 +158,12 @@ namespace Api.AppServices
 
                 _repoWrapper.ProductPhoto.AddRange(photos);
 
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
-                    throw new InvalidCastException("Save fail");
-
-                return _mapper.Map<IEnumerable<ProductPhotoDTO>>(photos.AsEnumerable());
+                return await _repoWrapper.SaveAsync() > 0
+                    ? _mapper.Map<IEnumerable<ProductPhotoDTO>>(photos.AsEnumerable())
+                    : throw new InvalidCastException("Save fail");
             }
 
             return await Process.RunAsync(action);
-        }
-
-        private async Task DeletePhotoFromCloudinary(string photoPublicId)
-        {
-            if (photoPublicId != null)
-            {
-                var resultDelete = await _cloudDinaryService.DeleteAsync(photoPublicId);
-                if (resultDelete.Error != null)
-                    throw new InvalidOperationException(resultDelete.Error.Message);
-            }
         }
 
         public async Task<ProcessResult> DeleteProductPhotoAsync(Guid id)
@@ -194,12 +178,21 @@ namespace Api.AppServices
 
                 _repoWrapper.ProductPhoto.Delete(photo);
 
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
+                if (await _repoWrapper.SaveAsync() <= 0)
                     throw new InvalidCastException("Save fail");
             }
 
             return await Process.RunAsync(action);
+        }
+
+        private async Task DeletePhotoFromCloudinary(string photoPublicId)
+        {
+            if (photoPublicId != null)
+            {
+                var resultDelete = await _cloudDinaryService.DeleteAsync(photoPublicId);
+                if (resultDelete.Error != null)
+                    throw new InvalidOperationException(resultDelete.Error.Message);
+            }
         }
     }
 }

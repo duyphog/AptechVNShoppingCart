@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Contracts;
+using Entities.Helpers;
 using Entities.Models;
 using Entities.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Http;
@@ -19,25 +19,70 @@ namespace Api.AppServices
             _mapper = mapper;
         }
 
-        public void Create(ContactUsForCreate model)
+        public Task<ProcessResult<ContactUs>> ConfirmAsync(ContactUsForConfirm model)
         {
-            var entity = _mapper.Map<ContactUs>(model);
-            _repoWrapper.ContactUs.Create(entity);
-            _repoWrapper.SaveAsync();
+            throw new NotImplementedException();
         }
 
-        public IEnumerable<ContactUs> GetAll()
+        public async Task<ProcessResult> CreateContacUsAsync(ContactUsForCreate model)
         {
-            return _repoWrapper.ContactUs.FindAll().AsEnumerable();
+            async Task action()
+            {
+                var contactUs = _mapper.Map<ContactUs>(model);
+                contactUs.CreateDate = DateTime.UtcNow;
+                _repoWrapper.ContactUs.Create(contactUs);
+                if (await _repoWrapper.SaveAsync() <= 0)
+                    throw new Exception("Save fail");
+            }
+
+            return await Process.RunAsync(action);
         }
 
-        public void Update(ContactUsForUpdate model)
+        public async Task<ProcessResult<ContactUs>> FindContacUsByIdAsync(Guid id)
         {
-            var entity = _repoWrapper.ContactUs.FindByCondition(x => x.Id == model.Id).FirstOrDefault();
-            var contactUs = _mapper.Map(model, entity);
+            async Task<ContactUs> action()
+            {
+                var contactUs = await _repoWrapper.ContactUs.FindContactUsByIdAsync(id);
+                return contactUs ?? throw new Exception("Id is not exist");
+            }
 
-            _repoWrapper.ContactUs.Update(contactUs);
-            _repoWrapper.SaveAsync();
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult<PagedList<ContactUs>>> GetAllContacUsAsync(ContactUsParameters parameters)
+        {
+            async Task<PagedList<ContactUs>> action()
+            {
+                var list = await _repoWrapper.ContactUs.GetAllContactUsAsync(parameters);
+
+                if (list.CurrentPages > list.TotalPages)
+                    throw new Exception("CurrentPages > TotalPages");
+
+                return list;
+            }
+
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult<ContactUs>> UpdateContacUsAsync(ContactUsForUpdate model)
+        {
+            async Task<ContactUs> action()
+            {
+                var contactUs = await _repoWrapper.ContactUs.FindContactUsByIdAsync(model.Id);
+                if (contactUs == null)
+                    throw new Exception("Id is not exist");
+
+                _ = _mapper.Map(model, contactUs);
+
+                contactUs.ModifyBy = CurrentUser.UserName;
+                contactUs.ModifyDate = DateTime.UtcNow;
+
+                _repoWrapper.ContactUs.Update(contactUs);
+
+                return await _repoWrapper.SaveAsync() > 0 ? contactUs : throw new Exception("Save fail");
+            }
+
+            return await Process.RunAsync(action);
         }
     }
 }

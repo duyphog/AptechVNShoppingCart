@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Api.Extentions;
 using Api.Models;
 using Contracts;
+using Entities.Helpers;
 using Entities.Models.DataTransferObjects;
 using Entities.ResponseModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 
 namespace Api.Controllers
 {
@@ -26,12 +27,14 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<ActionResult<LoginResponse>> RegisterAsync(AppUserForRegister model)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Validation error", errors));
+            }
+
             var result = await _appUserService.RegisterAsync(model);
-
-            if (result.Succeed == false)
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Register fail", result.Errors));
-
-            return Ok(result.Value);
+            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Register fail", result.Errors));
         }
 
         [AllowAnonymous]
@@ -49,48 +52,58 @@ namespace Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<LoginResponse>> LoginAsync(JObject model)
+        public async Task<ActionResult<LoginResponse>> LoginAsync(UserLogin model)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Validation error", errors));
+            }
+
             var result = await _appUserService.LoginAsync(model);
 
-            if (result.Succeed == false)
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Login fail", result.Errors));
-
-            return Ok(result.Value);
+            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Login fail", result.Errors));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<AppUserDTO>> GetUsersDetailAsync(Guid id)
         {
-            var result = await _appUserService.FindUserById(id);
-
-            if (result.Succeed == false)
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
-
-            return Ok(result.Value);
+            var result = await _appUserService.FindUserByIdAsync(id);
+            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
         }
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppUserDTO>>> GetUsersAsync()
+        public async Task<ActionResult<IEnumerable<AppUserDTO>>> GetUsersAsync([FromForm] AppUserParameters parameters)
         {
-            var result = await _appUserService.GetUsersAsync();
-
-            if (result.Succeed == false)
+            var result = await _appUserService.GetUsersAsync(parameters);
+            if (!result.Succeed)
+            {
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
+            }
 
-            return Ok(result.Value);
+            var list = result.Value;
+
+            if (list.TotalCount == 0)
+                return NoContent();
+
+            Response.AddPagination(list.TotalCount, list.PageSize, list.CurrentPages, list.TotalPages, list.HasPrevious, list.HasNext);
+
+            return Ok(list);
         }
 
         [HttpPut("change-password")]
-        public async Task<ActionResult> ChangePasswordAsync(JObject model)
+        public async Task<ActionResult> ChangePasswordAsync(ChangePassword model)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Validation error", errors));
+            }
+
             var result = await _appUserService.ChangePasswordAsync(model);
 
-            if (result.Succeed == false)
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Chage password fail", result.Errors));
-
-            return NoContent();
+            return result.Succeed ? NoContent() : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Chage password fail", result.Errors));
         }
 
         [HttpPut("{id}")]
@@ -100,14 +113,13 @@ namespace Api.Controllers
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Invalid id"));
 
             if (!ModelState.IsValid)
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Invalid model", ModelState.Values.SelectMany(e => e.Errors)));
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Validation error", errors));
+            }
 
             var result = await _appUserService.UpdateCurrentUserAsync(model);
-
-            if (result.Succeed == false)
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
-
-            return Ok(result.Value);
+            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
         }
     } 
 }

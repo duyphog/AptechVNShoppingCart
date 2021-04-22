@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Api.AppServices;
@@ -20,54 +21,58 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAllAsync()
         {
             var result = await _categoryService.FindAllAsync();
 
-            if (result.Succeed == false)
+            if (!result.Succeed)
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
 
-            return Ok(result.Value);
+            return result.Value.Any() ? Ok(result.Value) : NotFound(new ErrorResponse(HttpStatusCode.BadRequest, "Warning", "Not exist value"));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetById(string id)
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetByIdAsync(string id)
         {
             var result = await _categoryService.FindByIdAsync(id);
 
-            if (result.Succeed == false)
+            if (!result.Succeed)
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
 
-            if (result.Value == null)
-                return NoContent();
-
-            return Ok(result.Value);
+            return result.Value != null ? Ok(result.Value) : NotFound(new ErrorResponse(HttpStatusCode.BadRequest, "Warning", "Not exist value"));
         }
 
         [HttpPost]
-        public async Task<ActionResult<CategoryDTO>> Create(CategoryForCreate model)
+        public async Task<ActionResult<CategoryDTO>> CreateAsync(CategoryForCreate model)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Validation error", errors));
+            }
+
             var result = await _categoryService.CreateCategoryAsync(model);
 
-            if (result.Succeed == false)
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Create fail", result.Errors));
-
-            return Ok(result.Value);
+            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Create fail", result.Errors));
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<CategoryDTO>> Update(string id, CategoryForUpdate model)
+        public async Task<ActionResult<CategoryDTO>> UpdateAsync(string id, CategoryForUpdate model)
         {
-            if(id != model.Id)
+            if (id != model.Id)
             {
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Invalid Id"));
             }
+
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Validation error", errors));
+            }
+
             var result = await _categoryService.UpdateCategoryAsync(model);
 
-            if (result.Succeed == false)
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
-
-            return Ok(result.Value);
+            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
         }
 
         [HttpDelete("{id}")]
@@ -75,10 +80,7 @@ namespace Api.Controllers
         {
             var result = await _categoryService.DeleteCategoryAsync(id);
 
-            if (result.Succeed == false)
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Delete fail", result.Errors));
-
-            return NoContent();
+            return result.Succeed ? NoContent() : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Delete fail", result.Errors));
         }
     }
 }

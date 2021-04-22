@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Api.Extentions;
 using AutoMapper;
 using Contracts;
+using Entities.Helpers;
 using Entities.Models;
 using Entities.Models.DataTransferObjects;
 using Entities.ResponseModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 
 namespace Api.AppServices
 {
@@ -28,39 +28,36 @@ namespace Api.AppServices
             _tokenService = tokenService;
         }
 
-        public async Task<ProcessResult<IEnumerable<AppUserDTO>>> GetUsersAsync()
+        public async Task<ProcessResult<PagedList<AppUserDTO>>> GetUsersAsync(AppUserParameters parameters)
         {
-            async Task<IEnumerable<AppUserDTO>> action()
+            async Task<PagedList<AppUserDTO>> action()
             {
-                var users = await _repoWrapper.AppUser.FindAll()
-                        .Include(u => u.AppUserRoles)
-                        .ThenInclude(ur => ur.Role).ToListAsync();
+                var list = await _repoWrapper.AppUser.FindAllAppUserAsync(parameters);
+                if (list.CurrentPages > list.TotalPages)
+                    throw new Exception("CurrentPages > TotalPages");
 
-                return _mapper.Map<IEnumerable<AppUserDTO>>(users);
+                return new PagedList<AppUserDTO>(_mapper.Map<List<AppUserDTO>>(list), list.Count, list.CurrentPages, list.PageSize);
             }
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<AppUserDTO>> FindUserById(Guid id)
+        public async Task<ProcessResult<AppUserDTO>> FindUserByIdAsync(Guid id)
         {
             async Task<AppUserDTO> action() => _mapper.Map<AppUserDTO>(await _repoWrapper.AppUser.FindAppUserByIdAsync(id));
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<LoginResponse>> LoginAsync(JObject model)
+        public async Task<ProcessResult<LoginResponse>> LoginAsync(UserLogin model)
         {
             async Task<LoginResponse> action()
             {
-                var userName = model.GetValue("username").ToString();
-                var password = model.GetValue("password").ToString();
-
-                var user = await _repoWrapper.AppUser.FindAppUserByUserNameAsync(userName);
+                var user = await _repoWrapper.AppUser.FindAppUserByUserNameAsync(model.UserName);
                 if(user == null)
                     throw new InvalidOperationException("Invalid username");
 
                 using var hmac = new HMACSHA512(user.PasswordSalt);
-                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
 
                 return computedHash.EqualsByteArray(user.PasswordHash)
                     ? new LoginResponse { UserName = user.UserName, Token = await _tokenService.CreateTokenAsync(user) }
@@ -70,14 +67,14 @@ namespace Api.AppServices
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<LoginResponse>> RegisterAsync(AppUserForRegister user)
+        public async Task<ProcessResult<LoginResponse>> RegisterAsync(AppUserForRegister model)
         {
             async Task<LoginResponse> action()
             {
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
                 var newId = Guid.NewGuid();
 
-                var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => u.UserName.Equals(user.UserName) || u.Email.Equals(user.Email)).CountAsync();
+                var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => u.UserName.Equals(model.UserName) || u.Email.Equals(model.Email)).CountAsync();
                 if (countUserExists > 0)
                         throw new InvalidOperationException("Username or Email is exists");
 
@@ -89,36 +86,29 @@ namespace Api.AppServices
                     new AppUserRole { UserId = newId, RoleId = memberRole.Id }
                 };
 
-                //var entity = _mapper.Map<AppUser>(user);
-
-                var entity = new AppUser
+                var user = new AppUser
                 {
                     Id = newId,
-                    UserName = user.UserName.ToLower(),
-                    Email = user.Email.ToLower(),
-                    DateOfBirth = user.DateOfBirth,
-                    Gender = user.Gender,
-                    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(user.Password)),
+                    UserName = model.UserName.ToLower(),
+                    Email = model.Email.ToLower(),
+                    DateOfBirth = model.DateOfBirth,
+                    Gender = model.Gender,
+                    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.Password)),
                     PasswordSalt = hmac.Key,
                     Status = true,
                     CreateDate = now,
+                    CreateBy = model.UserName.ToLower(),
                     LastActive = now,
                     Version = 1,
                     AppUserRoles = userRoles
                 };
 
-                _repoWrapper.AppUser.CreateAppUser(entity);
-                var rows = await _repoWrapper.SaveAsync();
-                if(rows <= 0)
-                {
-                    throw new InvalidOperationException("Save fail");
-                }
+                _repoWrapper.AppUser.Create(user);
 
-                return new LoginResponse
-                {
-                    UserName = entity.UserName,
-                    Token = await _tokenService.CreateTokenAsync(entity)
-                };
+                return await _repoWrapper.SaveAsync() > 0
+                    ? new LoginResponse {  UserName = user.UserName, Token = await _tokenService.CreateTokenAsync(user)}
+                    : throw new InvalidOperationException("Save fail");
+                  
             }
 
             return await Process.RunAsync(action);
@@ -128,8 +118,8 @@ namespace Api.AppServices
         {
             async Task<AppUserDTO> action()
             {
-                var now = DateTime.Now;
-                var entityId = Guid.NewGuid();
+                var now = DateTime.UtcNow;
+                var newId = Guid.NewGuid();
 
                 var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => u.UserName.Equals(model.UserName) || u.Email.Equals(model.Email)).CountAsync();
                 if (countUserExists > 0)
@@ -146,14 +136,14 @@ namespace Api.AppServices
 
                     model.RoleIds.ToList().ForEach(rId =>
                     {
-                        userRoles.Add(new AppUserRole { UserId = entityId, RoleId = rId });
+                        userRoles.Add(new AppUserRole { UserId = newId, RoleId = rId });
                     });
                 }
 
                 using var hmac = new HMACSHA512();
                 var user = new AppUser
                 {
-                    Id = entityId,
+                    Id = newId,
                     UserName = model.UserName.ToLower(),
                     Email = model.Email.ToLower(),
                     DateOfBirth = model.DateOfBirth,
@@ -162,19 +152,16 @@ namespace Api.AppServices
                     PasswordSalt = hmac.Key,
                     Status = true,
                     CreateDate = now,
+                    CreateBy = CurrentUser.UserName,
                     LastActive = now,
                     Version = 1,
                     AppUserRoles = userRoles
                 };
 
-                _repoWrapper.AppUser.CreateAppUser(user);
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
-                {
-                    throw new InvalidOperationException("Save fail");
-                }
-
-                return _mapper.Map<AppUserDTO>(user);
+                _repoWrapper.AppUser.Create(user);
+                return await _repoWrapper.SaveAsync() > 0
+                    ? _mapper.Map<AppUserDTO>(user)
+                    : throw new InvalidOperationException("Save fail");
             }
 
             return await Process.RunAsync(action);
@@ -184,26 +171,23 @@ namespace Api.AppServices
         {
             async Task<AppUserDTO> action()
             {
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
                 var entity = await _repoWrapper.AppUser.FindAppUserByIdAsync(model.Id);
 
-                var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => !u.Id.Equals(model.Id) && u.Email.Equals(model.Email)).CountAsync();
+                var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => u.Id != model.Id && u.Email == model.Email).CountAsync();
                 if (countUserExists > 0)
                     throw new InvalidOperationException("Email is exists");
 
                 var user = _mapper.Map(model, entity);
                 user.ModifyDate = now;
+                user.ModifyBy = CurrentUser.UserName;
                 user.Version += 1;
 
-                _repoWrapper.AppUser.UpdateAppUser(user);
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
-                {
-                    throw new InvalidOperationException("Save fail");
-                }
-
-                return _mapper.Map<AppUserDTO>(user);
-            }
+                _repoWrapper.AppUser.Update(user);
+                return await _repoWrapper.SaveAsync() > 0
+                    ? _mapper.Map<AppUserDTO>(user)
+                    : throw new InvalidOperationException("Save fail");
+        }
 
             return await Process.RunAsync(action);
         }
@@ -212,7 +196,7 @@ namespace Api.AppServices
         {
             async Task<AppUserDTO> action()
             {
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
 
                 var countUserExists = await _repoWrapper.AppUser.FindByCondition(u => u.Id != model.Id && u.Email == model.Email).CountAsync();
                 if (countUserExists > 0)
@@ -220,37 +204,32 @@ namespace Api.AppServices
            
                 var user = _mapper.Map(model, CurrentUser);
                 user.ModifyDate = now;
+                user.ModifyBy = CurrentUser.UserName;
                 user.Version += 1;
 
-                _repoWrapper.AppUser.UpdateAppUser(user);
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
-                {
-                    throw new InvalidOperationException("Save fail");
-                }
-
-                return _mapper.Map<AppUserDTO>(user);
+                _repoWrapper.AppUser.Update(user);
+                return await _repoWrapper.SaveAsync() > 0
+                    ? _mapper.Map<AppUserDTO>(user)
+                    : throw new InvalidOperationException("Save fail");
             }
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult> ChangePasswordAsync(JObject model)
+        public async Task<ProcessResult> ChangePasswordAsync(ChangePassword model)
         {
             async Task action()
             {
-                var now = DateTime.Now;
-                var passwordOld = model.GetValue("passwordOld").ToString();
-                var passwordNew = model.GetValue("passwordNew").ToString();
+                var now = DateTime.UtcNow;
 
-                if (passwordOld.Equals(passwordNew))
+                if (model.PasswordOld == model.PasswordNew)
                 {
                     throw new InvalidOperationException("Password new equals password old");
                 }
 
                 using HMACSHA512 hmac = new(CurrentUser.PasswordSalt);
 
-                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(passwordOld));
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.PasswordOld));
 
                 if (!computedHash.EqualsByteArray(CurrentUser.PasswordHash))
                 {
@@ -259,14 +238,14 @@ namespace Api.AppServices
 
                 using HMACSHA512 hmac1 = new();
 
-                CurrentUser.PasswordHash = hmac1.ComputeHash(Encoding.UTF8.GetBytes(passwordNew));
+                CurrentUser.PasswordHash = hmac1.ComputeHash(Encoding.UTF8.GetBytes(model.PasswordNew));
                 CurrentUser.PasswordSalt = hmac1.Key;
+                CurrentUser.ModifyBy = CurrentUser.UserName;
                 CurrentUser.ModifyDate = now;
                 CurrentUser.Version += 1;
 
-                _repoWrapper.AppUser.UpdateAppUser(CurrentUser);
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
+                _repoWrapper.AppUser.Update(CurrentUser);
+                if (await _repoWrapper.SaveAsync() <= 0)
                 {
                     throw new InvalidOperationException("Save fail");
                 }
@@ -287,12 +266,12 @@ namespace Api.AppServices
                     throw new InvalidOperationException("User status is false");
 
                 user.Status = false;
-                user.ModifyDate = DateTime.Now;
+                user.ModifyDate = DateTime.UtcNow;
+                user.ModifyBy = CurrentUser.UserName;
                 user.Version += 1;
 
-                _repoWrapper.AppUser.UpdateAppUser(user);
-                var rows = await _repoWrapper.SaveAsync();
-                if (rows <= 0)
+                _repoWrapper.AppUser.Update(user);
+                if (await _repoWrapper.SaveAsync() <= 0)
                 {
                     throw new InvalidOperationException("Save fail");
                 }

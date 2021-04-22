@@ -24,7 +24,7 @@ namespace Repository
 
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
         {
-            return AppContext.Set<T>().Where(expression);
+            return AppContext.Set<T>().AsNoTracking().Where(expression);
         }
 
         public void Create(T entity)

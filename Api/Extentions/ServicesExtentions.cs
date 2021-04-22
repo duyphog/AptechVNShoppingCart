@@ -3,6 +3,7 @@ using System.Text;
 using Api.AppServices;
 using Contracts;
 using Entities;
+using Entities.Models.DataTransferObjects;
 using LoggerServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -80,19 +81,31 @@ namespace Api.Extentions
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
         }
 
-        public static void ConfigureAppUserService(this IServiceCollection services)
-        {
-            services.AddTransient<IAppUserService, AppUserService>();
-        }
-
         public static void ConfigureTokenServices(this IServiceCollection services)
         {
             services.AddScoped<ITokenService, TokenService>();
+        }
+
+        public static void ConfigureAppUserServices(this IServiceCollection services)
+        {
+            services.AddTransient<IAppUserService, AppUserService>();
         }
 
         public static void ConfigureProductServices(this IServiceCollection services)
         {
             services.AddTransient<IProductService, ProductService>();
         }
+
+        public static void ConfigureCloudDinaryServices(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddTransient<ICloudDinaryService, CloudDinaryService>();
+            services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+        }
+
+        public static void ConfigureCategoryServices(this IServiceCollection services)
+        {
+            services.AddTransient<ICategoryService, CategoryService>();
+        }
+        
     }
 }

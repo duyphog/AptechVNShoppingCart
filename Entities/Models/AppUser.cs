@@ -24,7 +24,9 @@ namespace Entities.Models
         public byte[] PasswordSalt { get; set; }
         public bool? Status { get; set; }
         public DateTime? LastActive { get; set; }
+        public string CreateBy { get; set; }
         public DateTime? CreateDate { get; set; }
+        public string ModifyBy { get; set; }
         public DateTime? ModifyDate { get; set; }
         public long? Version { get; set; }
 
