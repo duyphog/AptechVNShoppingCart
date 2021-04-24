@@ -9,6 +9,8 @@ namespace Contracts
     public interface IProductRepository : IRepositoryBase<Product>
     {
         Task<Product> GetProductByIdAsync(string id);
+        Task<Product> GetProductByNameAsync(string name);
         Task<PagedList<Product>> GetAllProduct(ProductParameters parameters);
+        int GetNewProductNumberFromSequence();
     }
 }

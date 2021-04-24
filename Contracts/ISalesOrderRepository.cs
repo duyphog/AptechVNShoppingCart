@@ -5,5 +5,6 @@ namespace Contracts
 {
     public interface ISalesOrderRepository : IRepositoryBase<SalesOrder>
     {
+        int GetNewOrderNumberFromSequence();
     }
 }

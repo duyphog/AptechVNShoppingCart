@@ -35,8 +35,10 @@ namespace Api.Helpers
             CreateMap<SalesOrderDetail, SalesOrderDetailDTO>()
                 .ForMember(d => d.Amount, opt => opt.MapFrom(s => s.Quantity * s.Price));
 
-            CreateMap<Product, ProductDTO>().
-                ForMember(d => d.PhotoUrl, opt => opt.MapFrom(s => s.ProductPhotos.FirstOrDefault(p => p.IsMain).Url));
+            CreateMap<Product, ProductDTO>()
+                .ForMember(d => d.PhotoUrl, opt => opt.MapFrom(s => s.ProductPhotos.FirstOrDefault(p => p.IsMain).Url))
+                .ForMember(d => d.Photos, opt => opt.MapFrom(s => s.ProductPhotos));
+
             CreateMap<ProductPhoto, ProductPhotoDTO>();
             CreateMap<ProductForCreate, Product>();
             CreateMap<ProductForUpdate, Product>();

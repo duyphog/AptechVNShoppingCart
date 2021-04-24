@@ -34,7 +34,7 @@ namespace Api.AppServices
                     throw new Exception("CurrentPages > TotalPages");
 
                 return new PagedList<ProductDTO>(_mapper.Map<List<Product>, List<ProductDTO>>(products),
-                    products.Count, products.CurrentPages, products.PageSize);
+                   products.TotalCount, products.CurrentPages, products.PageSize);
             }
 
             return await Process.RunAsync(action);
@@ -55,16 +55,26 @@ namespace Api.AppServices
         {
             async Task<ProductDTO> action()
             {
-                var entity = await _repoWrapper.Product.GetProductByIdAsync(model.Id);
+                if(await _repoWrapper.Category.FindById(model.CategoryId) == null)
+                {
+                    throw new InvalidOperationException("CategoryId is not exist");
+                }
+
+                var entity = await _repoWrapper.Product.GetProductByNameAsync(model.ProductName);
                 if (entity != null)
                 {
-                    throw new InvalidOperationException($"Product ID is exist, Product Name {entity.ProductName}");
+                    throw new InvalidOperationException("ProductName is exist");
                 }
 
                 var product = _mapper.Map<Product>(model);
                 product.CreateBy = CurrentUser.UserName;
                 product.CreateDate = DateTime.Now;
                 product.Status = true;
+
+                var productNumber = _repoWrapper.Product.GetNewProductNumberFromSequence().ToString();
+                var subNumber = new string('0', 5 - productNumber.Length);
+
+                product.Id = model.CategoryId + subNumber + productNumber;
 
                 _repoWrapper.Product.Create(product);
                 return await _repoWrapper.SaveAsync() > 0 ? _mapper.Map<ProductDTO>(product) : throw new InvalidCastException("Save fail");

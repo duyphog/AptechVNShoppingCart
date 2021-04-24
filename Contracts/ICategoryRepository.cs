@@ -10,5 +10,6 @@ namespace Contracts
     {
         Task<IEnumerable<Category>> FindAllAsync();
         Task<Category> FindById(string id);
+        int GetNewProductCodeFromSequence();
     }
 }

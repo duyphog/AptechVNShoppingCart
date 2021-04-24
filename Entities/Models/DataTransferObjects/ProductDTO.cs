@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace Entities.Models.DataTransferObjects
 {
     public class ProductDTO
@@ -15,7 +17,7 @@ namespace Entities.Models.DataTransferObjects
         public string Location { get; set; }
         public int? WarrantyPeriod { get; set; }
         public string PhotoUrl { get; set; }
-        public ProductPhotoDTO Photos { get; set; }
+        public IEnumerable<ProductPhotoDTO> Photos { get; set; }
 
         public bool? Status { get; set; }
         public string CreateBy { get; set; }
