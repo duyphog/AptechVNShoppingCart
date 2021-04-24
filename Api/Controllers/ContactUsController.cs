@@ -27,7 +27,7 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ContactUs>>> GetAllAsync([FromForm] ContactUsParameters parameters)
         {
-            var result = await _contactUsService.GetAllContacUsAsync(parameters);
+            var result = await _contactUsService.FindAllContacUsAsync(parameters);
             if (!result.Succeed)
             {
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));

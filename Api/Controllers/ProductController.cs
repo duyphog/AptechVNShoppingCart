@@ -96,9 +96,15 @@ namespace Api.Controllers
             return result.Succeed ? NoContent() : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Delete fail", result.Errors));
         }
 
+        [AllowAnonymous]
         [HttpPost("photo/{id}")]
         public async Task<ActionResult<IEnumerable<ProductPhotoDTO>>> UploadProductPhotosAsync(string id, IFormFile[] files)
         {
+            if (files.Length == 0)
+            {
+                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Upload fail", "No select file"));
+            }
+
             var result = await _productService.UploadPhotosAsync(id, files);
 
             return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Upload fail", result.Errors));

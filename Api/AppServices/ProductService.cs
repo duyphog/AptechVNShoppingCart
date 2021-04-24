@@ -28,7 +28,7 @@ namespace Api.AppServices
         {
             async Task<PagedList<ProductDTO>> action()
             {
-                var products = await _repoWrapper.Product.GetAllProduct(parameters);
+                var products = await _repoWrapper.Product.FindAllProduct(parameters);
 
                 if (products.CurrentPages > products.TotalPages)
                     throw new Exception("CurrentPages > TotalPages");
@@ -44,7 +44,7 @@ namespace Api.AppServices
         {
             async Task<ProductDTO> action()
             {
-                var product = await _repoWrapper.Product.GetProductByIdAsync(id);
+                var product = await _repoWrapper.Product.FindProductByIdAsync(id);
                 return _mapper.Map<ProductDTO>(product);
             }
 
@@ -60,7 +60,7 @@ namespace Api.AppServices
                     throw new InvalidOperationException("CategoryId is not exist");
                 }
 
-                var entity = await _repoWrapper.Product.GetProductByNameAsync(model.ProductName);
+                var entity = await _repoWrapper.Product.FindProductByNameAsync(model.ProductName);
                 if (entity != null)
                 {
                     throw new InvalidOperationException("ProductName is exist");
@@ -71,12 +71,7 @@ namespace Api.AppServices
                 product.CreateDate = DateTime.Now;
                 product.Status = true;
 
-                var productNumber = _repoWrapper.Product.GetNewProductNumberFromSequence().ToString();
-                var subNumber = new string('0', 5 - productNumber.Length);
-
-                product.Id = model.CategoryId + subNumber + productNumber;
-
-                _repoWrapper.Product.Create(product);
+                _repoWrapper.Product.CreateProduct(product);
                 return await _repoWrapper.SaveAsync() > 0 ? _mapper.Map<ProductDTO>(product) : throw new InvalidCastException("Save fail");
         }
             return await Process.RunAsync(action);
@@ -107,7 +102,7 @@ namespace Api.AppServices
         {
             async Task<ProductDTO> action()
             {
-                var product = await _repoWrapper.Product.GetProductByIdAsync(model.Id);
+                var product = await _repoWrapper.Product.FindProductByIdAsync(model.Id);
                 if (product == null)
                     throw new InvalidOperationException("Id is not exist");
 
@@ -132,7 +127,7 @@ namespace Api.AppServices
                     throw new InvalidOperationException("Select photo upload");
                 }
 
-                var product = await _repoWrapper.Product.GetProductByIdAsync(id);
+                var product = await _repoWrapper.Product.FindProductByIdAsync(id);
                 if (product == null)
                     throw new InvalidOperationException("Id is not exist");
 
@@ -164,9 +159,9 @@ namespace Api.AppServices
                 }
 
                 if (product.ProductPhotos.Count() == 0)
-                    photos[1].IsMain = true;
+                    photos[0].IsMain = true;
 
-                _repoWrapper.ProductPhoto.AddRange(photos);
+                await _repoWrapper.ProductPhoto.AddRangeAsync(photos);
 
                 return await _repoWrapper.SaveAsync() > 0
                     ? _mapper.Map<IEnumerable<ProductPhotoDTO>>(photos.AsEnumerable())

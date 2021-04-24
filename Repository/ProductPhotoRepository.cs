@@ -15,9 +15,9 @@ namespace Repository
         {
         }
 
-        public void AddRangePhotos(List<ProductPhoto> photos)
+        public async Task AddRangePhotosAsync(List<ProductPhoto> photos)
         {
-            AddRange(photos);
+            await AddRangeAsync(photos);
         }
 
         public async Task<ProductPhoto> FindById(Guid id)

@@ -15,7 +15,7 @@ namespace Repository
         {
         }
 
-        public async Task<Product> GetProductByIdAsync(string id)
+        public async Task<Product> FindProductByIdAsync(string id)
         {
             return await FindByCondition(p => p.Id == id)
                 .Include(p => p.Category)
@@ -23,7 +23,7 @@ namespace Repository
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<PagedList<Product>> GetAllProduct(ProductParameters parameters)
+        public async Task<PagedList<Product>> FindAllProduct(ProductParameters parameters)
         {
              var queries = FindAll()
                     .Include(p => p.Category)
@@ -38,7 +38,7 @@ namespace Repository
             return await PagedList<Product>.ToPagedList(queries, parameters.PageNumber, parameters.PageSize);
         }
 
-        public async Task<Product> GetProductByNameAsync(string name)
+        public async Task<Product> FindProductByNameAsync(string name)
         {
             return await FindByCondition(p => p.ProductName == name)
                 .Include(p => p.Category)
@@ -46,15 +46,13 @@ namespace Repository
                 .FirstOrDefaultAsync();
         }
 
-        public int GetNewProductNumberFromSequence()
+        public void CreateProduct(Product product)
         {
-            var param = new SqlParameter("@result", System.Data.SqlDbType.Int)
-            {
-                Direction = System.Data.ParameterDirection.Output
-            };
+            var productNumber = GetNextValueForSequence("productNumber_seq").ToString();
+            var subNumber = new string('0', 5 - productNumber.Length);
 
-            AppContext.Database.ExecuteSqlRaw("set @result = next value for productNumber_seq", param);
-            return  (int)param.Value;
+            product.Id = product.CategoryId + subNumber + productNumber;
+            Create(product);
         }
     }
 }

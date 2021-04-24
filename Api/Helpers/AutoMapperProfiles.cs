@@ -29,11 +29,7 @@ namespace Api.Helpers
             CreateMap<OrderStatus, OrderStatusDTO>();
 
             CreateMap<SalesOrderForCreate, SalesOrder>();
-            CreateMap<SalesOrderDetailForCreate, SalesOrderDetail>();
-            CreateMap<SalesOrder, SalesOrderDTO>().
-                ForMember(d => d.TotalAmount, opt => opt.MapFrom(s => s.SalesOrderDetails.Sum(x => x.Quantity*x.Price)));
-            CreateMap<SalesOrderDetail, SalesOrderDetailDTO>()
-                .ForMember(d => d.Amount, opt => opt.MapFrom(s => s.Quantity * s.Price));
+          
 
             CreateMap<Product, ProductDTO>()
                 .ForMember(d => d.PhotoUrl, opt => opt.MapFrom(s => s.ProductPhotos.FirstOrDefault(p => p.IsMain).Url))
@@ -43,6 +39,7 @@ namespace Api.Helpers
             CreateMap<ProductForCreate, Product>();
             CreateMap<ProductForUpdate, Product>();
 
+            CreateMap<DeliveryType, DeliveryTypeDTO>();
         }
     }
 }

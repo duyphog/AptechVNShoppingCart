@@ -9,7 +9,7 @@ namespace Contracts
 {
     public interface IContactUsService
     {
-        Task<ProcessResult<PagedList<ContactUs>>> GetAllContacUsAsync(ContactUsParameters parameters);
+        Task<ProcessResult<PagedList<ContactUs>>> FindAllContacUsAsync(ContactUsParameters parameters);
         Task<ProcessResult<ContactUs>> FindContacUsByIdAsync(Guid id);
         Task<ProcessResult<ContactUs>> ConfirmAsync(ContactUsForConfirm model);
         Task<ProcessResult> CreateContacUsAsync(ContactUsForCreate model);

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Entities.Models;
 
 namespace Contracts
 {
     public interface ISalesOrderRepository : IRepositoryBase<SalesOrder>
     {
-        int GetNewOrderNumberFromSequence();
+        Task AddRangeSalesOrderAsync(IEnumerable<SalesOrder> salesOrders);
     }
 }

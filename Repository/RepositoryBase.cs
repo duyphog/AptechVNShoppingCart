@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Contracts;
 using Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository
@@ -42,14 +44,29 @@ namespace Repository
             AppContext.Set<T>().Remove(entity);
         }
 
-        public void AddRange(List<T> entities)
+        /// <summary>
+        /// AdrangeAsync Entity to DataContext
+        /// </summary>
+        /// <param name="entities"></param>
+        public async Task AddRangeAsync(IEnumerable<T> entities)
         {
-            AppContext.AddRange(entities);
+            await AppContext.AddRangeAsync(entities);
         }
 
-        //public void SetNewValueEntry(T entityOld, T entityNew)
-        //{
-        //    AppContext.Entry(entityOld).CurrentValues.SetValues(entityNew);
-        //}
+        /// <summary>
+        /// Get next value for sequence name from database
+        /// </summary>
+        /// <param name="sequenceName"></param>
+        /// <returns></returns>
+        protected int GetNextValueForSequence(string sequenceName)
+        {
+            var param = new SqlParameter("@result", System.Data.SqlDbType.Int)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
+
+            AppContext.Database.ExecuteSqlRaw($"set @result = next value for {sequenceName}", param);
+            return (int)param.Value;
+        }
     }
 }

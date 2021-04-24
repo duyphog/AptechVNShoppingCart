@@ -15,6 +15,8 @@ namespace Contracts
         IOrderStatusRepository OrderStatus { get; }
         IContactUsRepository ContactUs { get; }
         ISalesOrderRepository SalesOrder { get; }
+        IDeliveryTypeRepository DeliveryType { get; }
+
         Task<int> SaveAsync();
     }
 }

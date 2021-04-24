@@ -106,6 +106,10 @@ namespace Api.Extentions
         {
             services.AddTransient<ICategoryService, CategoryService>();
         }
-        
+
+        public static void ConfigureAppUtilsServices(this IServiceCollection services)
+        {
+            services.AddTransient<IAppUtilsService, AppUtilsService>();
+        }
     }
 }

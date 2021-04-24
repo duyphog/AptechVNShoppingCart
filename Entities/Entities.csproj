@@ -9,7 +9,6 @@
     <Folder Include="Helpers\" />
     <Folder Include="Models\ResponseModels\" />
     <Folder Include="Models\DataTransferObjects\" />
-    <Folder Include="Models\EntityTypeConfigurations\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />

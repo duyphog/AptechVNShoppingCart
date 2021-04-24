@@ -18,6 +18,6 @@ namespace Contracts
 
         void Delete(T entity);
 
-        void AddRange(List<T> entities);
+        Task AddRangeAsync(IEnumerable<T> entities);
     }
 }

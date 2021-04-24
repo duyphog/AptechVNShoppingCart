@@ -20,7 +20,7 @@ namespace Repository
             return await FindByCondition(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<PagedList<ContactUs>> GetAllContactUsAsync(ContactUsParameters parameters)
+        public async Task<PagedList<ContactUs>> FindAllContactUsAsync(ContactUsParameters parameters)
         {
             var queries = FindAll().AsQueryable();
 

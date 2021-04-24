@@ -49,11 +49,11 @@ namespace Api.AppServices
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<PagedList<ContactUs>>> GetAllContacUsAsync(ContactUsParameters parameters)
+        public async Task<ProcessResult<PagedList<ContactUs>>> FindAllContacUsAsync(ContactUsParameters parameters)
         {
             async Task<PagedList<ContactUs>> action()
             {
-                var list = await _repoWrapper.ContactUs.GetAllContactUsAsync(parameters);
+                var list = await _repoWrapper.ContactUs.FindAllContactUsAsync(parameters);
 
                 if (list.CurrentPages > list.TotalPages)
                     throw new Exception("CurrentPages > TotalPages");

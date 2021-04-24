@@ -10,6 +10,7 @@ namespace Contracts
     {
         Task<IEnumerable<Category>> FindAllAsync();
         Task<Category> FindById(string id);
-        int GetNewProductCodeFromSequence();
+        Task<Category> FindByName(string name);
+        void CreateCategory(Category category);
     }
 }

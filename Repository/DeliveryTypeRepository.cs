@@ -9,13 +9,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
-    public class OrderStatusRepository : RepositoryBase<OrderStatus>, IOrderStatusRepository
+    public class DeliveryTypeRepository : RepositoryBase<DeliveryType>, IDeliveryTypeRepository
     {
-        public OrderStatusRepository(ShoppingCartContext repositoryContext) : base(repositoryContext)
+        public DeliveryTypeRepository(ShoppingCartContext repositoryContext) : base(repositoryContext)
         {
         }
 
-        public async Task<IEnumerable<OrderStatus>> GetAllOrderStatusAsync()
+        public async Task<IEnumerable<DeliveryType>> FindAllDeliveryTypeAsync()
         {
             return await FindAll().OrderBy(x => x.Id).ToListAsync();
         }

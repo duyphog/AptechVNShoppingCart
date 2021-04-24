@@ -19,6 +19,7 @@ namespace Repository
         private IOrderStatusRepository _orderStatus;
         private IContactUsRepository _contactUs;
         private ISalesOrderRepository _salesOrder;
+        private IDeliveryTypeRepository _deliveryType;
 
         public RepositoryWrapper(ShoppingCartContext context)
         {
@@ -152,6 +153,19 @@ namespace Repository
                 }
 
                 return _salesOrder;
+            }
+        }
+
+        public IDeliveryTypeRepository DeliveryType
+        {
+            get
+            {
+                if (_deliveryType == null)
+                {
+                    _deliveryType = new DeliveryTypeRepository(_context);
+                }
+
+                return _deliveryType;
             }
         }
 

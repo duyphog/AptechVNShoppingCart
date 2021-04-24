@@ -26,16 +26,17 @@ namespace Repository
             return await FindByCondition(x => x.Id == id).AsNoTracking().FirstOrDefaultAsync();
         }
 
-        public int GetNewProductCodeFromSequence()
+        public async Task<Category> FindByName(string name)
         {
-            var param = new SqlParameter("@result", System.Data.SqlDbType.Int)
-            {
-                Direction = System.Data.ParameterDirection.Output
-            };
-
-            AppContext.Database.ExecuteSqlRaw("set @result = next value for productCode_seq", param);
-            return (int)param.Value;
+            return await FindByCondition(x => x.Name == name).AsNoTracking().FirstOrDefaultAsync();
         }
 
+        public void CreateCategory(Category category)
+        {
+            var newId = GetNextValueForSequence("productCode_seq").ToString();
+            category.Id = new string('0', 2 - newId.Length) + newId;
+
+            Create(category);
+        }
     }
 }

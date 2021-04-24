@@ -1,14 +1,15 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace Entities.Models.DataTransferObjects
 {
-    public class SalesOrderDetailDTO
+    public class SalesOrderDetailsForCreate
     {
-        public Guid Id { get; set; }
-        public int Record { get; set; }
-        public Guid? SalesOrderId { get; set; }
+        [Required]
         public string ProductId { get; set; }
+        [Required]
         public int Quantity { get; set; }
+        [Required]
         public decimal Price { get; set; }
-        public decimal Amount { get; set; }
     }
 }

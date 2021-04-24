@@ -1,12 +1,11 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-
 namespace Entities.Models.DataTransferObjects
 {
-    public class CategoryForCreate
+    public class DeliveryTypeDTO
     {
-        [Required(ErrorMessage ="Name is required")]
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public decimal Fee { get; set; }
     }
 }

@@ -48,16 +48,18 @@ namespace Api.AppServices
         {
             async Task<CategoryDTO> acction()
             {
-                var entity = await _repoWrapper.Category.FindById(model.Id);
+                var entity = await _repoWrapper.Category.FindByName(model.Name);
                 if (entity != null)
-                    throw new InvalidOperationException($"Id is exist, category Name: {entity.Name}");
+                    throw new InvalidOperationException($"Name is exist, category Name: {entity.Name}");
+
 
                 var cartg = _mapper.Map<Category>(model);
+                
                 cartg.Status = true;
                 cartg.CreateBy = CurrentUser.UserName;
                 cartg.CreateDate = DateTime.UtcNow;
 
-                _repoWrapper.Category.Create(cartg);
+                _repoWrapper.Category.CreateCategory(cartg);
                 return await _repoWrapper.SaveAsync() <= 0 ? throw new Exception("Save fail") : _mapper.Map<CategoryDTO>(cartg);
             }
 

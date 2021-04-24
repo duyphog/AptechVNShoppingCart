@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Contracts;
 using Entities;
 using Entities.Models;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -13,15 +14,17 @@ namespace Repository
         {
         }
 
-        public int GetNewOrderNumberFromSequence()
+        public async Task AddRangeSalesOrderAsync(IEnumerable<SalesOrder> salesOrders)
         {
-            var param = new SqlParameter("@result", System.Data.SqlDbType.Int)
-            {
-                Direction = System.Data.ParameterDirection.Output
-            };
+            var newOrderNumber = GetNextValueForSequence("ordernumber_seq").ToString();
+            var orderNumber = new string('0', 8 - newOrderNumber.Length) + newOrderNumber;
 
-            AppContext.Database.ExecuteSqlRaw("set @result = next value for ordernumber_seq", param);
-            return (int)param.Value;
+            salesOrders.ToList().ForEach(x =>
+            {
+                x.Id = x.DeliveryTypeId.ToString() + x.ProductId + orderNumber;
+            });
+
+            await AddRangeAsync(salesOrders);
         }
     }
 }

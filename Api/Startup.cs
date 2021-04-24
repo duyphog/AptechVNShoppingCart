@@ -40,6 +40,7 @@ namespace Api
             services.ConfigureProductServices();
             services.ConfigureCloudDinaryServices(_config);
             services.ConfigureCategoryServices();
+            services.ConfigureAppUtilsServices();
 
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 

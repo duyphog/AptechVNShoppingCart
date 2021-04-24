@@ -9,6 +9,6 @@ namespace Contracts
     public interface IContactUsRepository : IRepositoryBase<ContactUs>
     {
         Task<ContactUs> FindContactUsByIdAsync(Guid id);
-        Task<PagedList<ContactUs>> GetAllContactUsAsync(ContactUsParameters parameters);
+        Task<PagedList<ContactUs>> FindAllContactUsAsync(ContactUsParameters parameters);
     }
 }

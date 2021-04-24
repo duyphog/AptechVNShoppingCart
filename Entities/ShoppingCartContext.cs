@@ -17,16 +17,12 @@ namespace Entities
         public virtual DbSet<AppUserRole> AppUserRoles { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<ContactUs> ContactUs { get; set; }
-        public virtual DbSet<Delivery> Deliveries { get; set; }
+        public virtual DbSet<DeliveryType> DeliveryTypes { get; set; }
         public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
-        public virtual DbSet<PaidDetail> PaidDetails { get; set; }
         public virtual DbSet<PaymentType> PaymentTypes { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductPhoto> ProductPhotos { get; set; }
-        public virtual DbSet<ProductReturnRequest> ProductReturnRequests { get; set; }
-        public virtual DbSet<ProductReturnRequestDetail> ProductReturnRequestDetails { get; set; }
         public virtual DbSet<SalesOrder> SalesOrders { get; set; }
-        public virtual DbSet<SalesOrderDetail> SalesOrderDetails { get; set; }
         public virtual DbSet<UserAddress> UserAddresses { get; set; }
 
         public static readonly ILoggerFactory loggerFactory = LoggerFactory.Create(builder => {
@@ -62,15 +58,24 @@ namespace Entities
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
 
                 entity.Property(e => e.DateOfBirth).HasColumnType("date");
 
                 entity.Property(e => e.Email)
+                    .IsRequired()
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
                 entity.Property(e => e.LastActive).HasColumnType("datetime");
+
+                entity.Property(e => e.ModifyBy)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ModifyDate).HasColumnType("datetime");
 
@@ -115,7 +120,7 @@ namespace Entities
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Description)
-                    .HasMaxLength(100)
+                    .HasMaxLength(500)
                     .IsUnicode(false);
 
                 entity.Property(e => e.ModifyBy)
@@ -136,7 +141,11 @@ namespace Entities
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.ConfirmDescription).IsUnicode(false);
+
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Description).IsUnicode(false);
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -156,48 +165,30 @@ namespace Entities
                 entity.Property(e => e.PhoneNumber)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Subject)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
             });
 
-            modelBuilder.Entity<Delivery>(entity =>
+            modelBuilder.Entity<DeliveryType>(entity =>
             {
-                entity.ToTable("Delivery");
+                entity.ToTable("DeliveryType");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
 
-                entity.Property(e => e.CompanyName).HasMaxLength(550);
+                entity.Property(e => e.Description).HasMaxLength(500);
 
-                entity.Property(e => e.CreateBy)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-                entity.Property(e => e.CreateDate).HasColumnType("datetime");
-
-                entity.Property(e => e.DeliveryDate).HasColumnType("datetime");
-
-                entity.Property(e => e.FeeAmount).HasColumnType("decimal(18, 4)");
-
-                entity.Property(e => e.FullName).HasMaxLength(250);
-
-                entity.Property(e => e.ModifyBy)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ModifyDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Phone)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SalesOrderAmount).HasColumnType("decimal(18, 4)");
+                entity.Property(e => e.Fee).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.Status).HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 4)");
-
-                entity.HasOne(d => d.SalesOrder)
-                    .WithMany(p => p.Deliveries)
-                    .HasForeignKey(d => d.SalesOrderId)
-                    .HasConstraintName("FK__Delivery__SalesO__324172E1");
             });
 
             modelBuilder.Entity<OrderStatus>(entity =>
@@ -223,36 +214,6 @@ namespace Entities
                     .HasMaxLength(50);
 
                 entity.Property(e => e.Status).HasDefaultValueSql("((1))");
-            });
-
-            modelBuilder.Entity<PaidDetail>(entity =>
-            {
-                entity.ToTable("PaidDetail");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Description)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FullName)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PaidAmount).HasColumnType("decimal(18, 4)");
-
-                entity.Property(e => e.PaidDate).HasColumnType("datetime");
-
-                entity.Property(e => e.SerialNumber)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 4)");
-
-                entity.HasOne(d => d.SalesOrder)
-                    .WithMany(p => p.PaidDetails)
-                    .HasForeignKey(d => d.SalesOrderId)
-                    .HasConstraintName("FK__PaidDetai__Sales__2B947552");
             });
 
             modelBuilder.Entity<PaymentType>(entity =>
@@ -302,8 +263,6 @@ namespace Entities
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
-                entity.Property(e => e.LongDescription).HasMaxLength(1);
-
                 entity.Property(e => e.ModifyBy)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -351,12 +310,12 @@ namespace Entities
                     .IsUnicode(false);
 
                 entity.Property(e => e.PublicId)
-                    .HasMaxLength(1)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Url)
                     .IsRequired()
-                    .HasMaxLength(1)
+                    .HasMaxLength(500)
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.Product)
@@ -365,69 +324,13 @@ namespace Entities
                     .HasConstraintName("FK__ProductPh__Produ__39E294A9");
             });
 
-            modelBuilder.Entity<ProductReturnRequest>(entity =>
-            {
-                entity.ToTable("ProductReturnRequest");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.CreateBy)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CreateDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ModifyBy)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ModifyDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Status).HasDefaultValueSql("((1))");
-
-                entity.HasOne(d => d.AppUser)
-                    .WithMany(p => p.ProductReturnRequests)
-                    .HasForeignKey(d => d.AppUserId)
-                    .HasConstraintName("FK__ProductRe__AppUs__3CBF0154");
-
-                entity.HasOne(d => d.SalesOrder)
-                    .WithMany(p => p.ProductReturnRequests)
-                    .HasForeignKey(d => d.SalesOrderId)
-                    .HasConstraintName("FK__ProductRe__Sales__3DB3258D");
-            });
-
-            modelBuilder.Entity<ProductReturnRequestDetail>(entity =>
-            {
-                entity.ToTable("ProductReturnRequestDetail");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Price).HasColumnType("decimal(18, 4)");
-
-                entity.Property(e => e.ProductId)
-                    .HasMaxLength(7)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.ProductReturnRequestDetails)
-                    .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__ProductRe__Produ__4277DAAA");
-
-                entity.HasOne(d => d.Request)
-                    .WithMany(p => p.ProductReturnRequestDetails)
-                    .HasForeignKey(d => d.RequestId)
-                    .HasConstraintName("FK__ProductRe__Reque__4183B671");
-            });
-
             modelBuilder.Entity<SalesOrder>(entity =>
             {
                 entity.ToTable("SalesOrder");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id)
+                    .HasMaxLength(16)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.City).HasMaxLength(100);
 
@@ -441,9 +344,12 @@ namespace Entities
 
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
 
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.DeliveryTypeId)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.FirstName).HasMaxLength(50);
 
                 entity.Property(e => e.LastName)
                     .IsRequired()
@@ -459,16 +365,17 @@ namespace Entities
 
                 entity.Property(e => e.OrderNote).HasMaxLength(250);
 
-                entity.Property(e => e.OrderNumber)
-                    .IsRequired()
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.PhoneNumber)
                     .IsRequired()
                     .HasMaxLength(50);
 
                 entity.Property(e => e.PostCode).HasMaxLength(20);
+
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.ProductId)
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ReceivedDate).HasColumnType("datetime");
 
@@ -481,43 +388,27 @@ namespace Entities
                 entity.HasOne(d => d.AppUser)
                     .WithMany(p => p.SalesOrders)
                     .HasForeignKey(d => d.AppUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SalesOrde__AppUs__25DB9BFC");
+                    .HasConstraintName("FK__SalesOrde__AppUs__65C116E7");
+
+                entity.HasOne(d => d.DeliveryType)
+                    .WithMany(p => p.SalesOrders)
+                    .HasForeignKey(d => d.DeliveryTypeId)
+                    .HasConstraintName("FK__SalesOrde__Deliv__689D8392");
 
                 entity.HasOne(d => d.OrderStatus)
                     .WithMany(p => p.SalesOrders)
                     .HasForeignKey(d => d.OrderStatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SalesOrde__Order__26CFC035");
+                    .HasConstraintName("FK__SalesOrde__Order__66B53B20");
 
                 entity.HasOne(d => d.PaymentType)
                     .WithMany(p => p.SalesOrders)
                     .HasForeignKey(d => d.PaymentTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SalesOrde__Payme__27C3E46E");
-            });
-
-            modelBuilder.Entity<SalesOrderDetail>(entity =>
-            {
-                entity.ToTable("SalesOrderDetail");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Price).HasColumnType("decimal(18, 4)");
-
-                entity.Property(e => e.ProductId)
-                    .HasMaxLength(7)
-                    .IsUnicode(false);
+                    .HasConstraintName("FK__SalesOrde__Payme__67A95F59");
 
                 entity.HasOne(d => d.Product)
-                    .WithMany(p => p.SalesOrderDetails)
+                    .WithMany(p => p.SalesOrders)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__SalesOrde__Produ__2F650636");
-
-                entity.HasOne(d => d.SalesOrder)
-                    .WithMany(p => p.SalesOrderDetails)
-                    .HasForeignKey(d => d.SalesOrderId)
-                    .HasConstraintName("FK__SalesOrde__Sales__2E70E1FD");
+                    .HasConstraintName("FK__SalesOrde__Produ__6991A7CB");
             });
 
             modelBuilder.Entity<UserAddress>(entity =>
@@ -569,6 +460,18 @@ namespace Entities
                     .HasForeignKey(d => d.AppUserId)
                     .HasConstraintName("FK__UserAddre__AppUs__361203C5");
             });
+
+            modelBuilder.HasSequence<int>("ordernumber_seq")
+                .HasMin(1)
+                .HasMax(99999999);
+
+            modelBuilder.HasSequence<int>("productCode_seq")
+                .HasMin(1)
+                .HasMax(99);
+
+            modelBuilder.HasSequence<int>("productNumber_seq")
+                .HasMin(1)
+                .HasMax(99999);
 
             OnModelCreatingPartial(modelBuilder);
         }

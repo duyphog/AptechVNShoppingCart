@@ -10,8 +10,7 @@ namespace Entities.Models
         public Product()
         {
             ProductPhotos = new HashSet<ProductPhoto>();
-            ProductReturnRequestDetails = new HashSet<ProductReturnRequestDetail>();
-            SalesOrderDetails = new HashSet<SalesOrderDetail>();
+            SalesOrders = new HashSet<SalesOrder>();
         }
 
         public string Id { get; set; }
@@ -33,7 +32,6 @@ namespace Entities.Models
 
         public virtual Category Category { get; set; }
         public virtual ICollection<ProductPhoto> ProductPhotos { get; set; }
-        public virtual ICollection<ProductReturnRequestDetail> ProductReturnRequestDetails { get; set; }
-        public virtual ICollection<SalesOrderDetail> SalesOrderDetails { get; set; }
+        public virtual ICollection<SalesOrder> SalesOrders { get; set; }
     }
 }

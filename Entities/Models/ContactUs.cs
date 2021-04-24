@@ -17,5 +17,6 @@ namespace Entities.Models
         public DateTime? CreateDate { get; set; }
         public string ModifyBy { get; set; }
         public DateTime? ModifyDate { get; set; }
+        public string ConfirmDescription { get; set; }
     }
 }
