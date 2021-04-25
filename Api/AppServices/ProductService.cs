@@ -29,10 +29,6 @@ namespace Api.AppServices
             async Task<PagedList<ProductDTO>> action()
             {
                 var products = await _repoWrapper.Product.FindAllProduct(parameters);
-
-                if (products.CurrentPages > products.TotalPages)
-                    throw new Exception("CurrentPages > TotalPages");
-
                 return new PagedList<ProductDTO>(_mapper.Map<List<Product>, List<ProductDTO>>(products),
                    products.TotalCount, products.CurrentPages, products.PageSize);
             }

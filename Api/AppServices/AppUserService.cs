@@ -33,9 +33,6 @@ namespace Api.AppServices
             async Task<PagedList<AppUserDTO>> action()
             {
                 var list = await _repoWrapper.AppUser.FindAllAppUserAsync(parameters);
-                if (list.CurrentPages > list.TotalPages)
-                    throw new Exception("CurrentPages > TotalPages");
-
                 return new PagedList<AppUserDTO>(_mapper.Map<List<AppUserDTO>>(list), list.Count, list.CurrentPages, list.PageSize);
             }
 

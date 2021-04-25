@@ -104,6 +104,7 @@ namespace Api.AppServices
                 category.ModifyDate = DateTime.UtcNow;
                 category.ModifyBy = CurrentUser.UserName;
 
+                _repoWrapper.Category.Update(category);
                 if (await _repoWrapper.SaveAsync() <= 0)
                     throw new Exception("Save fail");
             }

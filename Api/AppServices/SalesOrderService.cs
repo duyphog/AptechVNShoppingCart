@@ -4,9 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Contracts;
+using Entities.Helpers;
 using Entities.Models;
 using Entities.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace Api.AppServices
 {
@@ -45,11 +48,12 @@ namespace Api.AppServices
                         City = salesOrder.Order.City,
                         CompanyName = salesOrder.Order.CompanyName,
                         Contry = salesOrder.Order.Contry,
-                        OrderStatusId = 0,
+                        OrderStatusId = 1,
                         //detail
                         ProductId = item.ProductId,
                         Quantity = item.Quantity,
                         Price = item.Price,
+                        
                         //info
                         CreateBy = CurrentUser.UserName,
                         CreateDate = now,
@@ -58,11 +62,72 @@ namespace Api.AppServices
                 });
 
                 await _repoWrapper.SalesOrder.AddRangeSalesOrderAsync(orders);
+
+                //update stock
+                var products = await _repoWrapper.Product.FindAll().ToListAsync();
+
+                //orders.ForEach(async x =>
+                //{
+                //    var product = await _repoWrapper.Product.FindProductByIdAsync(x.ProductId);
+                //    product.Stock -= x.Quantity;
+                //    _repoWrapper.Product.Update(product);
+                //    await _repoWrapper.SaveAsync();
+                //});
+
                 if (await _repoWrapper.SaveAsync() <= 0)
                     throw new Exception("Save fail");
             }
 
             return await Process.RunAsync(action);
         }
+
+        public async Task<ProcessResult<PagedList<SalesOrderDTO>>> FindAllSalesOrderAsync(SalesOrderParameters parameters)
+        {
+            async Task<PagedList<SalesOrderDTO>> action()
+            {
+                var list = await _repoWrapper.SalesOrder.FindSalesOrderAsync(parameters);
+                return new PagedList<SalesOrderDTO>(_mapper.Map<List<SalesOrder>, List<SalesOrderDTO>>(list),
+                   list.TotalCount, list.CurrentPages, list.PageSize);
+            }
+
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult<PagedList<SalesOrderDTO>>> FindAllSalesOrderByCurrentUser(SalesOrderParameters parameters)
+        {
+            async Task<PagedList<SalesOrderDTO>> action()
+            {
+                parameters.UserId = CurrentUser.Id;
+                var list = await _repoWrapper.SalesOrder.FindSalesOrderAsync(parameters);
+                return new PagedList<SalesOrderDTO>(_mapper.Map<List<SalesOrder>, List<SalesOrderDTO>>(list),
+                   list.TotalCount, list.CurrentPages, list.PageSize);
+            }
+
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult> UpdateOrderStatus(JObject param)
+        {
+            async Task action()
+            {
+                var id = param.GetValue("id").ToString();
+                var orderStatus = int.Parse(param.GetValue("orderStatus").ToString());
+
+                var order = await _repoWrapper.SalesOrder.FindSalesOrderByIdAsync(id);
+                if(order == null)
+                {
+                    throw new Exception("Id is not exist");
+                }
+
+                order.OrderStatusId = orderStatus;
+
+                _repoWrapper.SalesOrder.Update(order);
+                if (await _repoWrapper.SaveAsync() <= 0)
+                    throw new Exception("Save fail");
+            }
+
+            return await Process.RunAsync(action);
+        }
+
     }
 }
