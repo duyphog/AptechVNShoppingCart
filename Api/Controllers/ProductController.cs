@@ -34,15 +34,14 @@ namespace Api.Controllers
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
             }
        
-            var products = result.Value;
+            var list = result.Value;
 
-            if (products.TotalCount == 0)
+            if (list.TotalCount == 0)
                 return NoContent();
 
-            Response.AddPagination(products.TotalCount, products.PageSize, products.CurrentPages,
-                                    products.TotalPages, products.HasPrevious, products.HasNext);
+            Response.AddPagination(list.TotalCount, list.PageSize, list.CurrentPages,list.TotalPages, list.HasPrevious, list.HasNext);
 
-            return Ok(products);
+            return Ok(list);
         }
 
         [HttpGet("{id}")]

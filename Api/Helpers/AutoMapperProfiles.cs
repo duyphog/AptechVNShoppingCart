@@ -40,6 +40,7 @@ namespace Api.Helpers
             CreateMap<ProductForUpdate, Product>();
 
             CreateMap<DeliveryType, DeliveryTypeDTO>();
+            CreateMap<SalesOrder, SalesOrderDTO>();
         }
     }
 }

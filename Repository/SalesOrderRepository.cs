@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Contracts;
 using Entities;
+using Entities.Helpers;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -26,5 +28,21 @@ namespace Repository
 
             await AddRangeAsync(salesOrders);
         }
+
+        public async Task<PagedList<SalesOrder>> FindSalesOrderAsync(SalesOrderParameters parameters)
+        {
+            var queries = FindAll().AsQueryable();
+
+            if (parameters.UserId != null)
+            {
+                queries = queries.Where(x => x.AppUserId == parameters.UserId);
+            }
+            queries = queries.OrderBy(x => x.OrderDate).OrderBy(x => x.Id);
+
+            return await PagedList<SalesOrder>.ToPagedList(queries, parameters.PageNumber, parameters.PageSize);
+        }
+
+        public async Task<SalesOrder> FindSalesOrderByIdAsync(string id) => await FindByCondition(x => x.Id == id).FirstOrDefaultAsync();
+        
     }
 }

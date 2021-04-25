@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Contracts;
 using Entities.Helpers;
 using Entities.Models;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository

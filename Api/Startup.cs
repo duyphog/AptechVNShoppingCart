@@ -35,12 +35,13 @@ namespace Api
             services.ConfigureSqlContext(_config);
             services.AddHttpContextAccessor();
             services.ConfigureRepositoryWrapper();
-            services.ConfigureAppUserServices();
-            services.ConfigureTokenServices();
-            services.ConfigureProductServices();
-            services.ConfigureCloudDinaryServices(_config);
-            services.ConfigureCategoryServices();
-            services.ConfigureAppUtilsServices();
+            services.ConfigureAppUserService();
+            services.ConfigureTokenService();
+            services.ConfigureProductService();
+            services.ConfigureCloudDinaryService(_config);
+            services.ConfigureCategoryService();
+            services.ConfigureAppUtilsService();
+            services.ConfigureSalesOrderService();
 
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 

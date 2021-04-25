@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Contracts;
+using Entities;
 using Entities.Helpers;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ namespace Repository
 {
     public class AppUserRepository : RepositoryBase<AppUser>, IAppUserRepository
     {
-        public AppUserRepository(Entities.ShoppingCartContext repositoryContext) : base(repositoryContext)
+        public AppUserRepository(ShoppingCartContext repositoryContext) : base(repositoryContext)
         {
         }
 
@@ -18,9 +19,14 @@ namespace Repository
         {
             var queries = FindAll().Include(u => u.AppUserRoles).ThenInclude(ur => ur.Role).AsQueryable();
 
-            if(parameters.RoleID != null)
+            if (parameters.Status != null)
             {
-                //queries = queries.Where(u => u.AppUserRoles.Where(ur => ur.RoleId == parameters.RoleID));
+                queries = queries.Where(u => u.Status == parameters.Status);
+            }
+
+            if (parameters.RoleID != null)
+            {
+                queries = queries.Where(u => u.AppUserRoles.Any(x=> x.RoleId == parameters.RoleID));
             }
 
             queries = queries.OrderByDescending(x => x.CreateDate);

@@ -81,35 +81,41 @@ namespace Api.Extentions
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
         }
 
-        public static void ConfigureTokenServices(this IServiceCollection services)
+        public static void ConfigureTokenService(this IServiceCollection services)
         {
             services.AddScoped<ITokenService, TokenService>();
         }
 
-        public static void ConfigureAppUserServices(this IServiceCollection services)
+        public static void ConfigureAppUserService(this IServiceCollection services)
         {
             services.AddTransient<IAppUserService, AppUserService>();
         }
 
-        public static void ConfigureProductServices(this IServiceCollection services)
+        public static void ConfigureProductService(this IServiceCollection services)
         {
             services.AddTransient<IProductService, ProductService>();
         }
 
-        public static void ConfigureCloudDinaryServices(this IServiceCollection services, IConfiguration config)
+        public static void ConfigureCloudDinaryService(this IServiceCollection services, IConfiguration config)
         {
             services.AddTransient<ICloudDinaryService, CloudDinaryService>();
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
         }
 
-        public static void ConfigureCategoryServices(this IServiceCollection services)
+        public static void ConfigureCategoryService(this IServiceCollection services)
         {
             services.AddTransient<ICategoryService, CategoryService>();
         }
 
-        public static void ConfigureAppUtilsServices(this IServiceCollection services)
+        public static void ConfigureAppUtilsService(this IServiceCollection services)
         {
             services.AddTransient<IAppUtilsService, AppUtilsService>();
         }
+
+        public static void ConfigureSalesOrderService(this IServiceCollection services)
+        {
+            services.AddTransient<ISalesOrderService, SalesOrderService>();
+        }
+        
     }
 }
