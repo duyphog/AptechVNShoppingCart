@@ -34,6 +34,8 @@ namespace Api
             services.ConfigureAuthentication(_config);
             services.ConfigureSqlContext(_config);
             services.AddHttpContextAccessor();
+            services.ConfigureActionContextAccessor();
+            services.ConfigureUrlHelper();
             services.ConfigureRepositoryWrapper();
             services.ConfigureAppUserService();
             services.ConfigureTokenService();
@@ -42,6 +44,7 @@ namespace Api
             services.ConfigureCategoryService();
             services.ConfigureAppUtilsService();
             services.ConfigureSalesOrderService();
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 

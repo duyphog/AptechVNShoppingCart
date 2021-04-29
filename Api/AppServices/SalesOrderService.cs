@@ -8,7 +8,6 @@ using Entities.Helpers;
 using Entities.Models;
 using Entities.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
 namespace Api.AppServices
@@ -29,6 +28,7 @@ namespace Api.AppServices
             {
                 var now = DateTime.UtcNow;
                 var orders = new List<SalesOrder>();
+                var products = await _repoWrapper.Product.GetProductAsync();
 
                 salesOrder.Details.ToList().ForEach(item =>
                 {
@@ -53,7 +53,7 @@ namespace Api.AppServices
                         ProductId = item.ProductId,
                         Quantity = item.Quantity,
                         Price = item.Price,
-                        
+                        Product = products.Where(x=>x.Id == item.ProductId).FirstOrDefault(),
                         //info
                         CreateBy = CurrentUser.UserName,
                         CreateDate = now,
@@ -64,7 +64,10 @@ namespace Api.AppServices
                 await _repoWrapper.SalesOrder.AddRangeSalesOrderAsync(orders);
 
                 //update stock
-                var products = await _repoWrapper.Product.FindAll().ToListAsync();
+                orders.ForEach(x => {
+                    if (x.Product.Stock - x.Quantity < 0) throw new Exception($"Stock invalid, {x.Product.ProductName} - inStock: {x.Product.Stock}");
+                        x.Product.Stock -= x.Quantity;
+                });
 
                 //orders.ForEach(async x =>
                 //{
@@ -120,6 +123,8 @@ namespace Api.AppServices
                 }
 
                 order.OrderStatusId = orderStatus;
+                order.ModifyBy = CurrentUser.UserName;
+                order.ModifyDate = DateTime.UtcNow;
 
                 _repoWrapper.SalesOrder.Update(order);
                 if (await _repoWrapper.SaveAsync() <= 0)

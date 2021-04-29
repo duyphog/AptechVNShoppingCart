@@ -12,6 +12,7 @@ namespace Entities.Models
         public Guid? AppUserId { get; set; }
         public int? OrderStatusId { get; set; }
         public int? PaymentTypeId { get; set; }
+        public int? OrderNumber { get; set; }
         public string DeliveryTypeId { get; set; }
         public string ProductId { get; set; }
         public int Quantity { get; set; }

@@ -24,6 +24,7 @@ namespace Repository
             salesOrders.ToList().ForEach(x =>
             {
                 x.Id = x.DeliveryTypeId.ToString() + x.ProductId + orderNumber;
+                x.OrderNumber = int.Parse(newOrderNumber);
             });
 
             await AddRangeAsync(salesOrders);

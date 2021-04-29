@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Contracts;
@@ -52,6 +53,11 @@ namespace Repository
 
             product.Id = product.CategoryId + subNumber + productNumber;
             Create(product);
+        }
+
+        public async Task<ICollection<Product>> GetProductAsync()
+        {
+            return await AppContext.Products.ToListAsync();
         }
     }
 }

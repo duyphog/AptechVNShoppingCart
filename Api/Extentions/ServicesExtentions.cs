@@ -6,6 +6,9 @@ using Entities;
 using Entities.Models.DataTransferObjects;
 using LoggerServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,6 +77,21 @@ namespace Api.Extentions
                             RequireExpirationTime = true
                         };
                     });
+        }
+
+        public static void ConfigureUrlHelper(this IServiceCollection services)
+        {
+            services.AddScoped<IUrlHelper>(x =>
+            {
+                var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
+                var factory = x.GetRequiredService<IUrlHelperFactory>();
+                return factory.GetUrlHelper(actionContext);
+            });
+        }
+
+        public static void ConfigureActionContextAccessor(this IServiceCollection services)
+        {
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }
         
         public static void ConfigureRepositoryWrapper(this IServiceCollection services)
