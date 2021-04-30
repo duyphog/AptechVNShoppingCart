@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ using Entities.Helpers;
 using Entities.Models;
 using Entities.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -27,8 +25,8 @@ namespace Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet]
-        public async Task<ActionResult<ProductDTO>> GetProductsAsync([FromQuery] ProductParameters productParameters)
+        [HttpGet(Name = nameof(GetProductsAsync))]
+        public async Task<ActionResult> GetProductsAsync([FromQuery] ProductParameters productParameters)
         {
             var result = await _productService.FindAll(productParameters);
             if (!result.Succeed)
@@ -42,29 +40,7 @@ namespace Api.Controllers
                 return NoContent();
 
             Response.AddPagination(list.TotalCount, list.PageSize, list.CurrentPages, list.TotalPages, list.HasPrevious, list.HasNext);
-
-            return Ok(list);
-        }
-
-        [AllowAnonymous]
-        [HttpGet("link", Name = nameof(GetProductsLinkAsync))]
-        public async Task<ActionResult<ProductDTO>> GetProductsLinkAsync([FromQuery] ProductParameters productParameters)
-        {
-            var result = await _productService.FindAll(productParameters);
-            if (!result.Succeed)
-            {
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
-            }
-
-            var list = result.Value;
-
-            if (list.TotalCount == 0)
-                return NoContent();
-
-            Response.AddPagination(list.TotalCount, list.PageSize, list.CurrentPages, list.TotalPages, list.HasPrevious, list.HasNext);
-
             var links = CreateLinksForCollection(productParameters, list.TotalPages, list.HasNext, list.HasPrevious);
-
             var toReturn = list.Select(x => ExpandSingleItem(x));
 
             return Ok(new
@@ -75,7 +51,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}", Name = nameof(GetProductByIdAsync))]
-        public async Task<ActionResult<Product>> GetProductByIdAsync(string id)
+        public async Task<ActionResult> GetProductByIdAsync(string id)
         {
             var result = await _productService.FindById(id);
             if (!result.Succeed)
@@ -83,7 +59,9 @@ namespace Api.Controllers
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
             }
 
-            return result.Value != null ? Ok(result.Value) : NotFound(new ErrorResponse(HttpStatusCode.BadRequest, "Warning", "Not exist value"));
+            return result.Value != null
+                ? Ok(ExpandSingleItem(result.Value))
+                : NotFound(new ErrorResponse(HttpStatusCode.BadRequest, "Warning", "Not exist value"));
         }
 
         [HttpPost(Name = nameof(CreateProductAsync))]
@@ -96,13 +74,15 @@ namespace Api.Controllers
             }
 
             var result = await _productService.CreateProductAsync(model);
-            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Create fail", result.Errors));
+            return result.Succeed
+                ? CreatedAtRoute( nameof(GetProductByIdAsync), new {id = result.Value.Id}, result.Value)
+                : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Create fail", result.Errors));
         }
 
         [HttpPut("{id}", Name = nameof(UpdateAsync))]
         public async Task<ActionResult<Product>> UpdateAsync(string id, ProductForUpdate model)
         {
-            if(id != model.Id)
+            if (id != model.Id)
             {
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Id Invalid"));
             }
@@ -114,7 +94,9 @@ namespace Api.Controllers
             }
 
             var result = await _productService.UpdateProductAsync(model);
-            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
+            return result.Succeed 
+                ? Ok(ExpandSingleItem(result.Value)) 
+                : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
         }
 
         [HttpDelete("{id}", Name = nameof(DeleteAsync))]
@@ -125,47 +107,25 @@ namespace Api.Controllers
             return result.Succeed ? NoContent() : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Delete fail", result.Errors));
         }
 
-        [AllowAnonymous]
-        [HttpPost("photo/{id}")]
-        public async Task<ActionResult<IEnumerable<ProductPhotoDTO>>> UploadProductPhotosAsync(string id, IFormFile[] files)
-        {
-            if (files.Length == 0)
-            {
-                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Upload fail", "No select file"));
-            }
-
-            var result = await _productService.UploadPhotosAsync(id, files);
-
-            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Upload fail", result.Errors));
-        }
-
-        [HttpDelete("photo/{id}")]
-        public async Task<ActionResult<IEnumerable<ProductPhotoDTO>>> DeleteProductPhotosAsync(Guid id)
-        {
-            var result = await _productService.DeleteProductPhotoAsync(id);
-
-            return result.Succeed ? NoContent() : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Delete fail", result.Errors));
-        }
-
         private List<Link> CreateLinksForCollection(ProductParameters productParameters, int totalPages, bool hasNext, bool hasPrevious)
         {
             var links = new List<Link>
             {
                 new Link(_urlHelper.Link(nameof(CreateProductAsync), null), "create", "POST"),
 
-                new Link(_urlHelper.Link(nameof(GetProductsLinkAsync), new
+                new Link(_urlHelper.Link(nameof(GetProductsAsync), new
                 {
                     pageSize = productParameters.PageSize,
                     pageNumber = productParameters.PageNumber
                 }), "self", "GET"),
 
-                new Link(_urlHelper.Link(nameof(GetProductsLinkAsync), new
+                new Link(_urlHelper.Link(nameof(GetProductsAsync), new
                 {
                     pageSize = productParameters.PageSize,
                     pageNumber = 1
                 }), "first", "GET"),
 
-                new Link(_urlHelper.Link(nameof(GetProductsLinkAsync), new
+                new Link(_urlHelper.Link(nameof(GetProductsAsync), new
                 {
                     pageSize = productParameters.PageSize,
                     pageNumber = totalPages
@@ -175,20 +135,20 @@ namespace Api.Controllers
             if (hasNext)
             {
                 links.Add(
-                new Link(_urlHelper.Link(nameof(GetProductsLinkAsync), new
+                new Link(_urlHelper.Link(nameof(GetProductsAsync), new
                 {
                     pageSize = productParameters.PageSize,
-                    page = productParameters.PageNumber + 1
+                    pageNumber = productParameters.PageNumber + 1
                 }), "next", "GET"));
             }
 
             if (hasPrevious)
             {
                 links.Add(
-                new Link(_urlHelper.Link(nameof(GetProductsLinkAsync), new
+                new Link(_urlHelper.Link(nameof(GetProductsAsync), new
                 {
                     pageSize = productParameters.PageSize,
-                    page = productParameters.PageNumber - 1
+                    pageNumber = productParameters.PageNumber - 1
                 }), "previous", "GET"));
             }
 
@@ -213,17 +173,17 @@ namespace Api.Controllers
               "self",
               "GET"),
 
-                new Link(_urlHelper.Link(nameof(DeleteAsync), new { id }),
-              "delete",
-              "DELETE"),
-
                 new Link(_urlHelper.Link(nameof(CreateProductAsync), null),
               "create",
               "POST"),
 
                 new Link(_urlHelper.Link(nameof(UpdateAsync), new { id }),
                "update",
-               "PUT")
+               "PUT"),
+
+                new Link(_urlHelper.Link(nameof(DeleteAsync), new { id }),
+              "delete",
+              "DELETE")
             };
 
             return links;
