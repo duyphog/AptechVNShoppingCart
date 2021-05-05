@@ -33,7 +33,7 @@ namespace Api.AppServices
             async Task<PagedList<AppUserDTO>> action()
             {
                 var list = await _repoWrapper.AppUser.FindAllAppUserAsync(parameters);
-                return new PagedList<AppUserDTO>(_mapper.Map<List<AppUserDTO>>(list), list.Count, list.CurrentPages, list.PageSize);
+                return new PagedList<AppUserDTO>(_mapper.Map<List<AppUserDTO>>(list), list.Count, list.CurrentPage, list.PageSize);
             }
 
             return await Process.RunAsync(action);

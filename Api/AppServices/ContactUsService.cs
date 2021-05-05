@@ -55,7 +55,7 @@ namespace Api.AppServices
             {
                 var list = await _repoWrapper.ContactUs.FindAllContactUsAsync(parameters);
 
-                if (list.CurrentPages > list.TotalPages)
+                if (list.CurrentPage > list.TotalPages)
                     throw new Exception("CurrentPages > TotalPages");
 
                 return list;

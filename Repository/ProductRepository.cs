@@ -28,12 +28,67 @@ namespace Repository
              var queries = FindAll()
                     .Include(p => p.Category)
                     .Include(p => p.ProductPhotos)
+                    .AsNoTracking()
                     .AsQueryable();
 
-            //if (!String.IsNullOrEmpty(parameters.Fields))
-            //{
-            //    queries += queries.
-            //}
+            if(!string.IsNullOrEmpty(parameters.ProductId))
+            {
+                queries = queries.Where(x => x.Id.Contains(parameters.ProductId));
+            }
+
+            if (!string.IsNullOrEmpty(parameters.ProductName))
+            {
+                queries = queries.Where(x => x.ProductName.Contains(parameters.ProductName));
+            }
+
+            switch (parameters.StatusType)
+            {
+                case 0:
+                    {
+                        queries = queries.Where(x => x.Status == false);
+                        break;
+                    }
+
+                case 1:
+                    {
+                        queries = queries.Where(x => x.Status == true);
+                        break;
+                    }
+
+                default: 
+                    break;
+            }
+
+            if(parameters.StockValue != null && parameters.PrefixStock != null)
+            {
+                switch (parameters.PrefixStock)
+                {
+                    case -1:
+                        {
+                            queries = queries.Where(x => x.Stock == parameters.StockValue);
+                            break;
+                        }
+                    case 0:
+                        {
+                            queries = queries.Where(x => x.Stock <= parameters.StockValue);
+                            break;
+                        }
+                    case 1:
+                        {
+                            queries = queries.Where(x => x.Stock >= parameters.StockValue);
+                            break;
+                        }
+                    case 2:
+                        {
+                            queries = queries.Where(x => x.Unlimited == true);
+                            break;
+                        }
+                    default:
+                        break;
+                }
+            }
+
+
             queries = queries.OrderBy(p => p.Id);
             return await PagedList<Product>.ToPagedList(queries, parameters.PageNumber, parameters.PageSize);
         }
@@ -43,6 +98,7 @@ namespace Repository
             return await FindByCondition(p => p.ProductName == name)
                 .Include(p => p.Category)
                 .Include(p => p.ProductPhotos)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
         }
 

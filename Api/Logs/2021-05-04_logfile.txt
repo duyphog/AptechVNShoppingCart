@@ -1,0 +1,10 @@
+2021-05-04 00:00:36.6328 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-04 00:00:36.6450 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+

@@ -19,10 +19,10 @@ namespace Repository
         {
             var queries = FindAll().Include(u => u.AppUserRoles).ThenInclude(ur => ur.Role).AsQueryable();
 
-            if (parameters.Status != null)
-            {
-                queries = queries.Where(u => u.Status == parameters.Status);
-            }
+            //if (parameters.StatusType != null)
+            //{
+            //    queries = queries.Where(u => u.Status == parameters.StatusType);
+            //}
 
             if (parameters.RoleID != null)
             {
