@@ -90,7 +90,7 @@ namespace Api.AppServices
             {
                 var list = await _repoWrapper.SalesOrder.FindSalesOrderAsync(parameters);
                 return new PagedList<SalesOrderDTO>(_mapper.Map<List<SalesOrder>, List<SalesOrderDTO>>(list),
-                   list.TotalCount, list.CurrentPages, list.PageSize);
+                   list.TotalCount, list.CurrentPage, list.PageSize);
             }
 
             return await Process.RunAsync(action);
@@ -103,7 +103,7 @@ namespace Api.AppServices
                 parameters.UserId = CurrentUser.Id;
                 var list = await _repoWrapper.SalesOrder.FindSalesOrderAsync(parameters);
                 return new PagedList<SalesOrderDTO>(_mapper.Map<List<SalesOrder>, List<SalesOrderDTO>>(list),
-                   list.TotalCount, list.CurrentPages, list.PageSize);
+                   list.TotalCount, list.CurrentPage, list.PageSize);
             }
 
             return await Process.RunAsync(action);

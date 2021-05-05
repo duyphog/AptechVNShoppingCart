@@ -5,6 +5,7 @@ using Entities.Helpers;
 using Entities.Models;
 using Entities.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 
 namespace Contracts
 {
@@ -23,5 +24,7 @@ namespace Contracts
         Task<ProcessResult<IEnumerable<ProductPhotoDTO>>> UploadPhotosAsync(string id, IFormFile[] files);
 
         Task<ProcessResult> DeleteProductPhotoAsync(Guid id);
+
+        Task<ProcessResult<IEnumerable<ProductPhotoDTO>>> SetMainProductPhotoAsync(JObject model);
     }
 }

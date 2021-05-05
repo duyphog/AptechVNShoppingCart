@@ -8,7 +8,7 @@ namespace Entities.Helpers
 {
     public class PagedList<T> : List<T>
     {
-        public int CurrentPages { get; private set; }
+        public int CurrentPage { get; private set; }
 
         public int TotalPages { get; private set; }
 
@@ -16,14 +16,14 @@ namespace Entities.Helpers
 
         public int TotalCount { get; private set; }
 
-        public bool HasPrevious => CurrentPages > 1;
+        public bool HasPrevious => CurrentPage > 1;
 
-        public bool HasNext => CurrentPages < TotalPages;
+        public bool HasNext => CurrentPage < TotalPages;
 
         public PagedList(List<T> items, int count, int pageNumber, int pageSize)
         {
             TotalCount = count;
-            CurrentPages = pageNumber;
+            CurrentPage = pageNumber;
             PageSize = pageSize;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
 

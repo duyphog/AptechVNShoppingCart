@@ -26,7 +26,7 @@ namespace Api.Controllers
 
         [AllowAnonymous]
         [HttpGet(Name = nameof(GetProductsAsync))]
-        public async Task<ActionResult> GetProductsAsync([FromQuery] ProductParameters productParameters)
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProductsAsync([FromQuery] ProductParameters productParameters)
         {
             var result = await _productService.FindAll(productParameters);
             if (!result.Succeed)
@@ -39,15 +39,9 @@ namespace Api.Controllers
             if (list.TotalCount == 0)
                 return NoContent();
 
-            Response.AddPagination(list.TotalCount, list.PageSize, list.CurrentPages, list.TotalPages, list.HasPrevious, list.HasNext);
-            var links = CreateLinksForCollection(productParameters, list.TotalPages, list.HasNext, list.HasPrevious);
-            var toReturn = list.Select(x => ExpandSingleItem(x));
+            Response.AddPagination(list.TotalCount, list.PageSize, list.CurrentPage, list.TotalPages, list.HasPrevious, list.HasNext);
 
-            return Ok(new
-            {
-                value = toReturn,
-                links
-            });
+            return Ok(list);
         }
 
         [HttpGet("{id}", Name = nameof(GetProductByIdAsync))]

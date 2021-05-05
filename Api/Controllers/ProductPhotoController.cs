@@ -10,6 +10,7 @@ using Entities.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace Api.Controllers
 {
@@ -25,10 +26,11 @@ namespace Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("photo/{id}", Name = nameof(UploadProductPhotosAsync))]
-        public async Task<ActionResult<IEnumerable<ProductPhotoDTO>>> UploadProductPhotosAsync(string id, IFormFile[] files)
+        [Consumes("multipart/form-data")]
+        [HttpPost("{id}")]
+        public async Task<ActionResult<IEnumerable<ProductPhotoDTO>>> UploadProductPhotosAsync(string id, [FromForm(Name = "files")] IFormFile[] files)
         {
-            if (files.Length == 0)
+            if (files == null || files.Length == 0)
             {
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Upload fail", "No select file"));
             }
@@ -41,6 +43,17 @@ namespace Api.Controllers
                     value = result.Value.Select(x => ExpandSingleItem(x)),
                     links = CreateLinksForCollection()
                 })
+                : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Upload fail", result.Errors));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<ProductPhotoDTO>>> UpdateProductPhotosIsMainAsync(JObject model)
+        {
+            
+            var result = await _productService.SetMainProductPhotoAsync(model);
+
+            return result.Succeed
+                ? Ok(result.Value)
                 : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Upload fail", result.Errors));
         }
 

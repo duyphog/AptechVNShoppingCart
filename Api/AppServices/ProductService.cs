@@ -8,6 +8,7 @@ using Entities.Helpers;
 using Entities.Models;
 using Entities.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 
 namespace Api.AppServices
 {
@@ -30,7 +31,7 @@ namespace Api.AppServices
             {
                 var products = await _repoWrapper.Product.FindAllProduct(parameters);
                 return new PagedList<ProductDTO>(_mapper.Map<List<Product>, List<ProductDTO>>(products),
-                   products.TotalCount, products.CurrentPages, products.PageSize);
+                   products.TotalCount, products.CurrentPage, products.PageSize);
             }
 
             return await Process.RunAsync(action);
@@ -103,6 +104,8 @@ namespace Api.AppServices
                     throw new InvalidOperationException("Id is not exist");
 
                 _ = _mapper.Map(model, product);
+                product.ModifyBy = CurrentUser.UserName;
+                product.ModifyDate = DateTime.UtcNow;
 
                 _repoWrapper.Product.Update(product);
                 return await _repoWrapper.SaveAsync() > 0 ? _mapper.Map<ProductDTO>(product) : throw new InvalidCastException("Save fail");
@@ -174,6 +177,8 @@ namespace Api.AppServices
                 var photo = await _repoWrapper.ProductPhoto.FindById(id);
                 if(photo == null)
                     throw new InvalidOperationException("Id is not exist");
+                if(photo.IsMain)
+                    throw new InvalidOperationException("Photo is main, not delete");
 
                 await DeletePhotoFromCloudinary(photo.PublicId);
 
@@ -194,6 +199,32 @@ namespace Api.AppServices
                 if (resultDelete.Error != null)
                     throw new InvalidOperationException(resultDelete.Error.Message);
             }
+        }
+
+        public async Task<ProcessResult<IEnumerable<ProductPhotoDTO>>> SetMainProductPhotoAsync(JObject model)
+        {
+            async Task<IEnumerable<ProductPhotoDTO>> action()
+            {
+                var productId = model.GetValue("productId").ToString();
+                var photoId = Guid.Parse(model.GetValue("photoId").ToString());
+
+                var product = await _repoWrapper.Product.FindProductByIdAsync(productId);
+                if (product == null)
+                    throw new InvalidOperationException("Product is not exist");
+
+                var photo = product.ProductPhotos.FirstOrDefault(x => x.Id == photoId);
+                if (photo == null)
+                    throw new InvalidOperationException("Id is not exist");
+
+                product.ProductPhotos.ToList().ForEach(x => x.IsMain = false);
+                photo.IsMain = true;
+
+                _repoWrapper.Product.Update(product);
+
+                return await _repoWrapper.SaveAsync() >0 ? _mapper.Map<IEnumerable<ProductPhotoDTO>>(product.ProductPhotos) : throw new InvalidCastException("Save fail");
+            }
+
+            return await Process.RunAsync(action);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Api.Controllers
             if (list.TotalCount == 0)
                 return NoContent();
 
-            Response.AddPagination(list.TotalCount, list.PageSize, list.CurrentPages, list.TotalPages, list.HasPrevious, list.HasNext);
+            Response.AddPagination(list.TotalCount, list.PageSize, list.CurrentPage, list.TotalPages, list.HasPrevious, list.HasNext);
 
             return Ok(list);
         }
@@ -54,7 +54,7 @@ namespace Api.Controllers
             if (list.TotalCount == 0)
                 return NoContent();
 
-            Response.AddPagination(list.TotalCount, list.PageSize, list.CurrentPages, list.TotalPages, list.HasPrevious, list.HasNext);
+            Response.AddPagination(list.TotalCount, list.PageSize, list.CurrentPage, list.TotalPages, list.HasPrevious, list.HasNext);
 
             return Ok(list);
         }
