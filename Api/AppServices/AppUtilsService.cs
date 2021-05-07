@@ -51,6 +51,15 @@ namespace Api.AppServices
             return await Process.RunAsync(action);
         }
 
+        public async Task<ProcessResult<IEnumerable<AppRoleDTO>>> FindAllAppRoleAsync()
+        {
 
+            async Task<IEnumerable<AppRoleDTO>> action()
+            {
+                var lst = await _repoWrapper.AppRole.FileAllAppRole();
+                return _mapper.Map<IEnumerable<AppRoleDTO>>(lst);
+            }
+            return await Process.RunAsync(action);
+        }
     }
 }

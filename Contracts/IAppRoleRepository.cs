@@ -11,5 +11,7 @@ namespace Contracts
         Task<AppRole> FindAppRoleById(Guid id);
 
         Task<AppRole> FindAppRoleByName(string roleName);
+
+        Task<IEnumerable<AppRole>> FileAllAppRole();
     }
 }

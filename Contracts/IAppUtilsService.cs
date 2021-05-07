@@ -11,5 +11,6 @@ namespace Contracts
         Task<ProcessResult<IEnumerable<PaymentTypeDTO>>> FindAllPaymentTypeAsync();
         Task<ProcessResult<IEnumerable<OrderStatusDTO>>> FindAllOrderStatusAsync();
         Task<ProcessResult<IEnumerable<DeliveryTypeDTO>>> FindAllDeliveryTypeAsync();
+        Task<ProcessResult<IEnumerable<AppRoleDTO>>> FindAllAppRoleAsync();
     }
 }
