@@ -1,0 +1,991 @@
+2021-05-05 17:30:05.9959 INFO Request {method} {url} => {statusCode}
+POST
+/api/admin/AccountManager
+{"userName":"string","email":"string","dateOfBirth":"2021-05-04T09:22:52.926Z","gender":0,"password":"string","roleIds":["3fa85f64-5717-4562-b3fc-2c963f66afa6"]}
+
+2021-05-05 17:31:06.2815 INFO Request {method} {url} => {statusCode}
+GET
+/api/admin/AccountManager
+
+
+2021-05-05 17:32:23.3024 INFO Request {method} {url} => {statusCode}
+POST
+/api/account
+{
+  "userName": "string",
+  "email": "string",
+  "dateOfBirth": "2021-05-04T09:24:46.482Z",
+  "gender": 0,
+  "password": "string",
+  "roleIds": [
+    "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  ]
+}
+
+2021-05-05 17:33:16.9372 INFO Request {method} {url} => {statusCode}
+GET
+/api/admin/AccountManager
+{
+  "userName": "string",
+  "email": "string",
+  "dateOfBirth": "2021-05-04T09:24:46.482Z",
+  "gender": 0,
+  "password": "string",
+  "roleIds": [
+    "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  ]
+}
+
+2021-05-05 17:33:26.2872 INFO Request {method} {url} => {statusCode}
+POST
+/api/admin/AccountManager
+{
+  "userName": "string",
+  "email": "string",
+  "dateOfBirth": "2021-05-04T09:24:46.482Z",
+  "gender": 0,
+  "password": "string",
+  "roleIds": [
+    "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  ]
+}
+
+2021-05-05 17:33:44.5213 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 17:33:44.5298 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 18:45:40.7380 INFO Request {method} {url} => {statusCode}
+POST
+/api/admin/AccountManager
+{
+  "userName": "string",
+  "email": "string",
+  "dateOfBirth": "2021-05-04T09:24:46.482Z",
+  "gender": 0,
+  "password": "string",
+  "roleIds": [
+    "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  ]
+}
+
+2021-05-05 18:45:47.7494 INFO Request {method} {url} => {statusCode}
+POST
+/api/admin/accountmanager
+{
+  "userName": "string",
+  "email": "string",
+  "dateOfBirth": "2021-05-04T09:24:46.482Z",
+  "gender": 0,
+  "password": "string",
+  "roleIds": [
+    "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  ]
+}
+
+2021-05-05 18:47:32.6868 INFO Request {method} {url} => {statusCode}
+POST
+/api/admin/accountmanager
+{
+  "userName": "string",
+  "email": "string",
+  "dateOfBirth": "2021-05-04T09:24:46.482Z",
+  "gender": 0,
+  "password": "string",
+  "roleIds": [
+    "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  ]
+}
+
+2021-05-05 18:48:02.8415 INFO Request {method} {url} => {statusCode}
+POST
+/api/admin/AccountManager
+{
+  "userName": "string",
+  "email": "string",
+  "dateOfBirth": "2021-05-04T09:22:52.926Z",
+  "gender": 0,
+  "password": "string",
+  "roleIds": [
+    "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  ]
+}
+
+2021-05-05 18:48:55.4991 INFO Request {method} {url} => {statusCode}
+POST
+/api/admin/AccountManager
+{
+  "userName": "string",
+  "email": "string",
+  "dateOfBirth": "2021-05-04T09:22:52.926Z",
+  "gender": 0,
+  "password": "string",
+  "roleIds": [
+    "1733c8fe-5767-4f45-9072-1e0dfe9a01ec"
+  ]
+}
+
+2021-05-05 18:49:58.5011 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 18:49:58.5091 INFO Request {method} {url} => {statusCode}
+POST
+/api/account
+{"userName":"cuong","email":"cuong@gmail.com","password":"cuong","gender":"1","dateOfBirth":"2020-02-02"}
+
+2021-05-05 18:50:09.8650 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 18:50:09.8757 INFO Request {method} {url} => {statusCode}
+POST
+/api/account
+{"userName":"cuong","email":"cuong@gmail.com","password":"cuong","gender":"1","dateOfBirth":"2020-02-02"}
+
+2021-05-05 19:01:54.2187 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:01:54.2327 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:01:54.4048 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 19:01:54.4048 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 19:01:57.7555 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:01:57.7690 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:02:36.8261 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:02:36.8261 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:02:40.5561 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:02:40.5561 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:02:40.6511 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:02:40.6684 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:02:56.4597 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:02:56.4696 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:03:00.3813 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:03:00.3896 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:03:05.4069 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:03:05.4186 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:03:12.7048 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:03:12.7165 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:03:26.4792 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:03:26.4792 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:03:26.5980 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:03:26.6114 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:04:13.1746 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:04:13.2040 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:04:16.4477 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:04:16.4477 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:04:16.5407 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:04:16.5407 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:05:17.4258 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:05:17.4384 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:05:17.5437 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:05:17.5437 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:07:03.0201 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 19:07:03.0275 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 19:07:08.7330 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:07:08.7427 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:07:11.9484 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 19:07:11.9613 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 19:07:15.2963 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:07:15.3066 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:16:47.8077 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:16:47.8249 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:17:25.3763 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:17:25.3763 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:17:25.4796 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:17:25.4796 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:19:33.3806 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:19:33.3895 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:19:39.5886 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:19:39.6020 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:19:39.7069 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:19:39.7154 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:21:47.5407 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:21:47.5407 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:21:47.6534 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:21:47.6534 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:44:01.5633 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:44:01.5730 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:44:01.7212 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:44:01.7288 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:44:58.8704 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:44:58.8704 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:44:59.0048 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:44:59.0091 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:46:34.4940 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:46:34.4940 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:46:34.7379 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:46:34.7592 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:47:52.4067 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:47:52.4067 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:47:52.5473 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:47:52.5576 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:55:18.9418 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:55:18.9555 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:55:19.0984 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:55:19.1150 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:56:40.1253 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:56:40.1253 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:56:40.2620 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:56:40.2769 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:57:34.8110 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:57:34.9664 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:57:50.5767 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:57:50.5767 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:57:50.6959 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:57:50.6999 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 19:59:22.3109 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 19:59:22.3109 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 19:59:22.4831 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 19:59:22.4980 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 20:00:27.2563 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 20:00:27.2755 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 20:00:27.3852 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 20:00:27.4016 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 20:00:29.6597 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 20:01:10.1404 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 20:01:10.1493 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 20:01:10.2817 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 20:01:10.2898 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 20:03:27.8860 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 20:03:27.9495 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 20:03:28.3486 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-05 20:03:28.3571 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-05 21:06:35.3836 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 21:06:35.4741 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 21:07:03.9068 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 21:07:03.9265 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 21:07:54.4136 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{
+  "userName": "admin",
+  "password": "admin"
+}
+
+2021-05-05 21:08:15.7083 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{
+  "userName": "admin",
+  "passWord": "admin"
+}
+
+2021-05-05 21:10:21.5033 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{
+  "userName": "admin",
+  "passWord": "admin"
+}
+
+2021-05-05 21:12:31.3885 INFO Request {method} {url} => {statusCode}
+POST
+/api/account
+{"userName":"admin","email":"admin","dateOfBirth":"2021-05-05T14:11:58.855Z","gender":0,"password":"admin","roleIds":["65bb97e7-23c0-4ff6-816e-fdd233c05fb1"]}
+
+2021-05-05 21:12:41.6156 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 21:12:41.6240 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 21:12:56.5405 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:12:56.5405 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:13:03.4040 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:13:03.4040 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:17:21.0402 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:17:21.0402 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:18:04.9716 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:18:04.9716 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:19:07.1636 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:19:07.1750 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:28:48.0778 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:28:48.0924 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:29:02.5303 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:29:02.5303 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:29:52.2509 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:30:04.8343 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:30:15.4932 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:30:37.5493 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:30:55.7532 INFO Request {method} {url} => {statusCode}
+GET
+/api/product/0500004
+
+
+2021-05-05 21:30:55.7532 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-05 21:31:05.4832 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:32:37.9264 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:32:37.9353 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:32:40.5891 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:32:43.1213 INFO Request {method} {url} => {statusCode}
+GET
+/api/product/0200019
+
+
+2021-05-05 21:32:43.1213 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-05 21:32:50.9888 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 21:32:51.0010 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+
+2021-05-05 21:32:51.0820 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:32:51.0953 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:32:53.8656 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:32:58.0007 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:32:58.0229 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:33:02.1238 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product/0200019
+
+
+2021-05-05 21:33:02.1238 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-05 21:33:02.1238 INFO Request {method} {url} => {statusCode}
+GET
+/api/product/0200019
+
+
+2021-05-05 21:33:02.1372 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-05 21:33:16.5821 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:33:16.5957 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:38:41.4448 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:38:41.4561 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:38:43.4297 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:38:43.4335 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 21:39:19.2819 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product/0200019
+
+
+2021-05-05 21:39:19.2819 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-05 21:39:19.2898 INFO Request {method} {url} => {statusCode}
+GET
+/api/product/0200019
+
+
+2021-05-05 21:39:19.2898 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-05 21:39:32.4775 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 21:39:32.4775 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-05 22:26:38.9771 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-05 22:26:38.9843 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+

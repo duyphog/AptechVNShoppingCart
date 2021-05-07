@@ -1,0 +1,40 @@
+2021-05-06 08:10:45.0469 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-06 08:10:45.0851 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-06 10:35:37.6767 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-06 10:35:37.6919 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-06 12:10:09.9675 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-06 12:10:09.9874 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-06 17:13:15.5840 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-06 17:13:15.5919 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
