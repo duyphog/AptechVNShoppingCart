@@ -13,6 +13,6 @@ namespace Entities.Helpers
             get => _pageSize;
         }
 
-        public int? StatusType { set; get; }
+        public int? StatusType { set; get; } = 1;
     }
 }

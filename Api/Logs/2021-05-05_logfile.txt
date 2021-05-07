@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2021-05-05 17:30:05.9959 INFO Request {method} {url} => {statusCode}
 POST
 /api/admin/AccountManager
@@ -865,15 +866,23 @@ GET
 
 
 2021-05-05 21:32:50.9888 INFO Request {method} {url} => {statusCode}
+=======
+2021-05-05 21:00:40.8348 INFO Request {method} {url} => {statusCode}
+>>>>>>> 180cfa3992c151b9acc45720b81972939e503db8
 OPTIONS
 /api/account/login
 
 
+<<<<<<< HEAD
 2021-05-05 21:32:51.0010 INFO Request {method} {url} => {statusCode}
+=======
+2021-05-05 21:00:40.8726 INFO Request {method} {url} => {statusCode}
+>>>>>>> 180cfa3992c151b9acc45720b81972939e503db8
 POST
 /api/account/login
 {"username":"admin","password":"admin"}
 
+<<<<<<< HEAD
 2021-05-05 21:32:51.0820 INFO Request {method} {url} => {statusCode}
 OPTIONS
 /api/product
@@ -989,3 +998,5 @@ GET
 /api/product
 
 
+=======
+>>>>>>> 180cfa3992c151b9acc45720b81972939e503db8

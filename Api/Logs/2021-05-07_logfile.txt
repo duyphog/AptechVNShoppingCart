@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2021-05-07 08:01:01.8827 INFO Request {method} {url} => {statusCode}
 OPTIONS
 /api/account/login
@@ -314,25 +315,37 @@ GET
 
 
 2021-05-07 08:37:09.0179 INFO Request {method} {url} => {statusCode}
+=======
+2021-05-07 00:00:01.5076 INFO Request {method} {url} => {statusCode}
+>>>>>>> 180cfa3992c151b9acc45720b81972939e503db8
 OPTIONS
 /api/category
 
 
+<<<<<<< HEAD
 2021-05-07 08:37:09.0721 INFO Request {method} {url} => {statusCode}
+=======
+2021-05-07 00:00:01.5109 INFO Request {method} {url} => {statusCode}
+>>>>>>> 180cfa3992c151b9acc45720b81972939e503db8
 GET
 /api/category
 
 
+<<<<<<< HEAD
 2021-05-07 08:37:11.9595 INFO Request {method} {url} => {statusCode}
 OPTIONS
 /api/product
 
 
 2021-05-07 08:37:11.9673 INFO Request {method} {url} => {statusCode}
+=======
+2021-05-07 00:00:02.7238 INFO Request {method} {url} => {statusCode}
+>>>>>>> 180cfa3992c151b9acc45720b81972939e503db8
 GET
 /api/product
 
 
+<<<<<<< HEAD
 2021-05-07 08:37:15.0788 INFO Request {method} {url} => {statusCode}
 OPTIONS
 /api/product
@@ -3598,3 +3611,5 @@ GET
 /api/category
 
 
+=======
+>>>>>>> 180cfa3992c151b9acc45720b81972939e503db8
