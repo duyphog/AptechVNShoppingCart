@@ -1,0 +1,10 @@
+2021-05-05 21:00:40.8348 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/login
+
+
+2021-05-05 21:00:40.8726 INFO Request {method} {url} => {statusCode}
+POST
+/api/account/login
+{"username":"admin","password":"admin"}
+

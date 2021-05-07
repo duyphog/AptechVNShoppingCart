@@ -5,6 +5,7 @@ namespace Entities.Models
 {
     public class Process
     {
+
         public static ProcessResult Run(Action action)
         {
             try
@@ -12,9 +13,13 @@ namespace Entities.Models
                 action();
                 return ProcessResult.Ok();
             }
-            catch (Exception e)
+            catch (InvalidOperationException ie)
             {
-                return ProcessResult.Fail(e.Message);
+                return ProcessResult.Fail(ie.Message);
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -25,9 +30,13 @@ namespace Entities.Models
                 await action();
                 return ProcessResult.Ok();
             }
-            catch (Exception e)
+            catch (InvalidOperationException ie)
             {
-                return ProcessResult.Fail(e.Message);
+                return ProcessResult.Fail(ie.Message);
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -38,9 +47,13 @@ namespace Entities.Models
                 var result = action();
                 return ProcessResult<T>.Ok(result);
             }
-            catch (Exception e)
+            catch (InvalidOperationException ie)
             {
-                return ProcessResult<T>.Fail(e.Message);
+                return ProcessResult<T>.Fail(ie.Message);
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -51,9 +64,13 @@ namespace Entities.Models
                 var result = await action();
                 return ProcessResult<T>.Ok(result);
             }
-            catch (Exception e)
+            catch (InvalidOperationException ie)
             {
-                return ProcessResult<T>.Fail(e.Message);
+                return ProcessResult<T>.Fail(ie.Message);
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -67,11 +84,16 @@ namespace Entities.Models
                     transaction.Commit();
                     return ProcessResult.Ok();
                 }
-                catch (Exception e)
+                catch (InvalidOperationException ie)
                 {
                     transaction.Rollback();
-                    return ProcessResult.Fail(e.Message);
+                    return ProcessResult.Fail(ie.Message);
                 }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }   
             }
         }
 
@@ -85,10 +107,15 @@ namespace Entities.Models
                     transaction.Commit();
                     return ProcessResult<T>.Ok(result);
                 }
-                catch (Exception e)
+                catch (InvalidOperationException ie)
                 {
                     transaction.Rollback();
-                    return ProcessResult<T>.Fail(e.Message);
+                    return ProcessResult<T>.Fail(ie.Message);
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }

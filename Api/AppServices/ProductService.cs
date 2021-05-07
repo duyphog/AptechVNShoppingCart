@@ -68,8 +68,43 @@ namespace Api.AppServices
                 product.CreateDate = DateTime.Now;
                 product.Status = true;
 
+               
+                if (model.Files != null)
+                {
+                    string error = "";
+                    var photos = new List<ProductPhoto>();
+                    for (int i = 0; i < model.Files.Length; i++)
+                    {
+                        var resultUpload = await _cloudDinaryService.AddAsync(model.Files[i]);
+                        if (resultUpload.Error != null)
+                        {
+                            error = resultUpload.Error.Message;
+                            break;
+                        }
+
+                        photos.Add(new ProductPhoto
+                        {
+                            Id = Guid.NewGuid(),
+                            PublicId = resultUpload.PublicId,
+                            Url = resultUpload.SecureUrl.AbsoluteUri,
+                            IsMain = false,
+                            CreateBy = CurrentUser.UserName,
+                            CreateDate = DateTime.UtcNow
+                        });
+                    }
+
+                    if (error.Length > 0)
+                    {
+                        photos.ForEach(async x => await DeletePhotoFromCloudinary(x.PublicId));
+                        throw new InvalidOperationException(error);
+                    }
+
+                    photos[0].IsMain = true;
+                    product.ProductPhotos = photos;
+                }
+
                 _repoWrapper.Product.CreateProduct(product);
-                return await _repoWrapper.SaveAsync() > 0 ? _mapper.Map<ProductDTO>(product) : throw new InvalidCastException("Save fail");
+                return await _repoWrapper.SaveAsync() > 0 ? _mapper.Map<ProductDTO>(product) : throw new InvalidOperationException("Save fail");
         }
             return await Process.RunAsync(action);
         }
@@ -99,6 +134,7 @@ namespace Api.AppServices
         {
             async Task<ProductDTO> action()
             {
+                string error = "";
                 var product = await _repoWrapper.Product.FindProductByIdAsync(model.Id);
                 if (product == null)
                     throw new InvalidOperationException("Id is not exist");
@@ -107,8 +143,50 @@ namespace Api.AppServices
                 product.ModifyBy = CurrentUser.UserName;
                 product.ModifyDate = DateTime.UtcNow;
 
+                // add image file
+                if (model.Files != null)
+                {
+                    var photos = new List<ProductPhoto>();
+                    for (int i = 0; i < model.Files.Length; i++)
+                    {
+                        var resultUpload = await _cloudDinaryService.AddAsync(model.Files[i]);
+                        if (resultUpload.Error != null)
+                        {
+                            error = resultUpload.Error.Message;
+                            break;
+                        }
+
+                        photos.Add(new ProductPhoto
+                        {
+                            Id = Guid.NewGuid(),
+                            ProductId = product.Id,
+                            PublicId = resultUpload.PublicId,
+                            Url = resultUpload.SecureUrl.AbsoluteUri,
+                            IsMain = false,
+                            CreateBy = CurrentUser.UserName,
+                            CreateDate = DateTime.UtcNow
+                        });
+                    }
+
+                    if (error.Length > 0)
+                    {
+                        photos.ForEach(async x => await DeletePhotoFromCloudinary(x.PublicId));
+                        throw new InvalidOperationException(error);
+                    }
+
+                    if (product.ProductPhotos.Count() == 0)
+                    {
+                        photos[0].IsMain = true;
+                        product.ProductPhotos = photos;
+                    }
+                    else
+                    {
+                        photos.ForEach(item => product.ProductPhotos.Add(item));
+                    }
+                }
+                  
                 _repoWrapper.Product.Update(product);
-                return await _repoWrapper.SaveAsync() > 0 ? _mapper.Map<ProductDTO>(product) : throw new InvalidCastException("Save fail");
+                return await _repoWrapper.SaveAsync() > 0 ? _mapper.Map<ProductDTO>(product) : throw new InvalidOperationException("Save fail");
             }
 
             return await Process.RunAsync(action);
@@ -147,7 +225,9 @@ namespace Api.AppServices
                         ProductId = id,
                         PublicId = resultUpload.PublicId,
                         Url = resultUpload.SecureUrl.AbsoluteUri,
-                        IsMain = false
+                        IsMain = false,
+                        CreateBy = CurrentUser.UserName,
+                        CreateDate = DateTime.UtcNow
                     });
                 }
 
@@ -164,7 +244,7 @@ namespace Api.AppServices
 
                 return await _repoWrapper.SaveAsync() > 0
                     ? _mapper.Map<IEnumerable<ProductPhotoDTO>>(photos.AsEnumerable())
-                    : throw new InvalidCastException("Save fail");
+                    : throw new InvalidOperationException("Save fail");
             }
 
             return await Process.RunAsync(action);
@@ -185,7 +265,7 @@ namespace Api.AppServices
                 _repoWrapper.ProductPhoto.Delete(photo);
 
                 if (await _repoWrapper.SaveAsync() <= 0)
-                    throw new InvalidCastException("Save fail");
+                    throw new InvalidOperationException("Save fail");
             }
 
             return await Process.RunAsync(action);
@@ -221,7 +301,7 @@ namespace Api.AppServices
 
                 _repoWrapper.Product.Update(product);
 
-                return await _repoWrapper.SaveAsync() >0 ? _mapper.Map<IEnumerable<ProductPhotoDTO>>(product.ProductPhotos) : throw new InvalidCastException("Save fail");
+                return await _repoWrapper.SaveAsync() >0 ? _mapper.Map<IEnumerable<ProductPhotoDTO>>(product.ProductPhotos) : throw new InvalidOperationException("Save fail");
             }
 
             return await Process.RunAsync(action);

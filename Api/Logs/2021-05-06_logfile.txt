@@ -1,0 +1,20 @@
+2021-05-06 09:08:31.1601 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product/0200019
+
+
+2021-05-06 09:08:31.1601 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-06 09:08:31.2219 INFO Request {method} {url} => {statusCode}
+GET
+/api/product/0200019
+
+
+2021-05-06 09:08:31.2219 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+

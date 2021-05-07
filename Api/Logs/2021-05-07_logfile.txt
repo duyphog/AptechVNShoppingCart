@@ -1,0 +1,15 @@
+2021-05-07 00:00:01.5076 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-07 00:00:01.5109 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-07 00:00:02.7238 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+

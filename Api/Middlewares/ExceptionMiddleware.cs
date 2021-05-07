@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Api.Models;
 using Contracts;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 
 namespace Api.Middlewares
 {
@@ -11,11 +12,13 @@ namespace Api.Middlewares
     {
 
         private readonly RequestDelegate _next;
+        private readonly IHostEnvironment _env;
         private readonly ILoggerManager _logger;
 
-        public ExceptionMiddleware(RequestDelegate next, ILoggerManager logger)
+        public ExceptionMiddleware(RequestDelegate next, IHostEnvironment env, ILoggerManager logger)
         {
             _next = next;
+            _env = env;
             _logger = logger;
         }
 
@@ -28,18 +31,15 @@ namespace Api.Middlewares
             catch (Exception ex)
             {
                 _logger.LogError($"Exception: {ex}");
-                await HandleExceptionAsync(httpContext);
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                httpContext.Response.ContentType = "aplication/json";
+
+                var response = _env.IsDevelopment()
+                 ? new ErrorResponse(httpContext.Response.StatusCode, ex.Message, ex.StackTrace?.ToString())
+                 : new ErrorResponse(httpContext.Response.StatusCode, "Internal Server Error");
+
+                await httpContext.Response.WriteAsJsonAsync(response);
             }
-        }
-
-        private async static Task HandleExceptionAsync(HttpContext httpContext)
-        {
-            httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            httpContext.Response.ContentType = "aplication/json";
-
-            var response = new ErrorResponse(httpContext.Response.StatusCode, "Internal Server Error");
-
-            await httpContext.Response.WriteAsJsonAsync(response);
         }
     }
 }

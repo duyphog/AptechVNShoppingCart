@@ -10,7 +10,6 @@ using Entities.Models;
 using Entities.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 namespace Api.Controllers
 {
     public class ProductController : ControllerBase
@@ -25,7 +24,7 @@ namespace Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet(Name = nameof(GetProductsAsync))]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProductsAsync([FromQuery] ProductParameters productParameters)
         {
             var result = await _productService.FindAll(productParameters);
@@ -54,12 +53,13 @@ namespace Api.Controllers
             }
 
             return result.Value != null
-                ? Ok(ExpandSingleItem(result.Value))
+                ? Ok(result.Value)
                 : NotFound(new ErrorResponse(HttpStatusCode.BadRequest, "Warning", "Not exist value"));
         }
 
-        [HttpPost(Name = nameof(CreateProductAsync))]
-        public async Task<ActionResult<ProductDTO>> CreateProductAsync(ProductForCreate model)
+        [Consumes("multipart/form-data")]
+        [HttpPost]
+        public async Task<ActionResult<ProductDTO>> CreateProductAsync([FromForm] ProductForCreate model)
         {
             if (!ModelState.IsValid)
             {
@@ -73,8 +73,9 @@ namespace Api.Controllers
                 : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Create fail", result.Errors));
         }
 
-        [HttpPut("{id}", Name = nameof(UpdateAsync))]
-        public async Task<ActionResult<Product>> UpdateAsync(string id, ProductForUpdate model)
+        [Consumes("multipart/form-data")]
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Product>> UpdateAsync(string id, [FromForm] ProductForUpdate model)
         {
             if (id != model.Id)
             {
@@ -86,10 +87,12 @@ namespace Api.Controllers
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Validation error", errors));
             }
+            //var keyvalue = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString())["photos"].ToString();
+            //model.Photos = JsonConvert.DeserializeObject<ProductPhotoDTO[]>(keyvalue);
 
             var result = await _productService.UpdateProductAsync(model);
-            return result.Succeed 
-                ? Ok(ExpandSingleItem(result.Value)) 
+            return result.Succeed
+                ? Ok(result.Value)
                 : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
         }
 
@@ -99,88 +102,6 @@ namespace Api.Controllers
             var result = await _productService.DeleteProductAsync(id);
 
             return result.Succeed ? NoContent() : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Delete fail", result.Errors));
-        }
-
-        private List<Link> CreateLinksForCollection(ProductParameters productParameters, int totalPages, bool hasNext, bool hasPrevious)
-        {
-            var links = new List<Link>
-            {
-                new Link(_urlHelper.Link(nameof(CreateProductAsync), null), "create", "POST"),
-
-                new Link(_urlHelper.Link(nameof(GetProductsAsync), new
-                {
-                    pageSize = productParameters.PageSize,
-                    pageNumber = productParameters.PageNumber
-                }), "self", "GET"),
-
-                new Link(_urlHelper.Link(nameof(GetProductsAsync), new
-                {
-                    pageSize = productParameters.PageSize,
-                    pageNumber = 1
-                }), "first", "GET"),
-
-                new Link(_urlHelper.Link(nameof(GetProductsAsync), new
-                {
-                    pageSize = productParameters.PageSize,
-                    pageNumber = totalPages
-                }), "last", "GET")
-            };
-
-            if (hasNext)
-            {
-                links.Add(
-                new Link(_urlHelper.Link(nameof(GetProductsAsync), new
-                {
-                    pageSize = productParameters.PageSize,
-                    pageNumber = productParameters.PageNumber + 1
-                }), "next", "GET"));
-            }
-
-            if (hasPrevious)
-            {
-                links.Add(
-                new Link(_urlHelper.Link(nameof(GetProductsAsync), new
-                {
-                    pageSize = productParameters.PageSize,
-                    pageNumber = productParameters.PageNumber - 1
-                }), "previous", "GET"));
-            }
-
-            return links;
-        }
-
-        private dynamic ExpandSingleItem(ProductDTO product)
-        {
-            var links = GetLinks(product.Id);
-
-            var resourceToReturn = product.ToDynamic() as IDictionary<string, object>;
-            resourceToReturn.Add("links", links);
-
-            return resourceToReturn;
-        }
-
-        private IEnumerable<Link> GetLinks(string id)
-        {
-            var links = new List<Link>
-            {
-                new Link(_urlHelper.Link(nameof(GetProductByIdAsync), new { id }),
-              "self",
-              "GET"),
-
-                new Link(_urlHelper.Link(nameof(CreateProductAsync), null),
-              "create",
-              "POST"),
-
-                new Link(_urlHelper.Link(nameof(UpdateAsync), new { id }),
-               "update",
-               "PUT"),
-
-                new Link(_urlHelper.Link(nameof(DeleteAsync), new { id }),
-              "delete",
-              "DELETE")
-            };
-
-            return links;
         }
     }
 }
