@@ -14,6 +14,11 @@ namespace Repository
         {
         }
 
+        public async Task<IEnumerable<AppRole>> FileAllAppRole()
+        {
+            return await FindAll().ToListAsync();
+        }
+
         public async Task<AppRole> FindAppRoleById(Guid id)
         {
             return await FindByCondition(r => r.Id == id).FirstOrDefaultAsync();
