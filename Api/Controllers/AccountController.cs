@@ -65,6 +65,7 @@ namespace Api.Controllers
             return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Login fail", result.Errors));
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<AppUserDTO>> GetUsersDetailAsync(Guid id)
         {

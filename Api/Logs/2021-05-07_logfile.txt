@@ -3613,3 +3613,243 @@ GET
 
 =======
 >>>>>>> 180cfa3992c151b9acc45720b81972939e503db8
+2021-05-07 20:43:15.7268 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:43:15.8023 INFO Request {method} {url} => {statusCode}
+GET
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:43:19.1964 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-07 20:43:19.1964 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-07 20:44:49.0284 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-07 20:44:49.0388 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-07 20:44:49.1736 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:44:49.1736 INFO Request {method} {url} => {statusCode}
+GET
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:47:46.5144 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-07 20:47:46.5406 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-07 20:47:47.3126 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:47:47.3462 INFO Request {method} {url} => {statusCode}
+GET
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:49:09.3976 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:49:09.3976 INFO Request {method} {url} => {statusCode}
+GET
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:49:12.5634 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-07 20:49:12.5634 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-07 20:49:13.5091 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account
+
+
+2021-05-07 20:49:13.5091 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-07 20:49:21.8460 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:49:21.8460 INFO Request {method} {url} => {statusCode}
+GET
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:49:42.8425 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:49:42.8527 INFO Request {method} {url} => {statusCode}
+GET
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:49:45.7026 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-07 20:49:45.7110 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-07 20:50:01.3707 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:50:01.3843 INFO Request {method} {url} => {statusCode}
+GET
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:50:04.9030 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-07 20:50:04.9030 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-07 20:53:42.6349 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:53:42.6723 INFO Request {method} {url} => {statusCode}
+GET
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:53:45.0510 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-07 20:53:45.0558 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-07 20:53:52.3558 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product
+
+
+2021-05-07 20:53:52.3662 INFO Request {method} {url} => {statusCode}
+GET
+/api/product
+
+
+2021-05-07 20:53:54.5930 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product/0500001
+
+
+2021-05-07 20:53:54.5930 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-07 20:53:54.6008 INFO Request {method} {url} => {statusCode}
+GET
+/api/product/0500001
+
+
+2021-05-07 20:53:54.6008 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-07 20:57:15.8474 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/product/0500001
+
+
+2021-05-07 20:57:15.8474 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/category
+
+
+2021-05-07 20:57:15.8524 INFO Request {method} {url} => {statusCode}
+GET
+/api/product/0500001
+
+
+2021-05-07 20:57:15.8524 INFO Request {method} {url} => {statusCode}
+GET
+/api/category
+
+
+2021-05-07 20:57:17.1479 INFO Request {method} {url} => {statusCode}
+OPTIONS
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:57:17.1527 INFO Request {method} {url} => {statusCode}
+GET
+/api/account/230a11a5-cfcf-4352-997b-5e597be1e53d
+
+
+2021-05-07 20:59:23.4965 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-07 21:00:40.6043 INFO Request {method} {url} => {statusCode}
+GET
+/api/account
+
+
+2021-05-07 21:00:43.4824 INFO Request {method} {url} => {statusCode}
+GET
+/favicon.ico
+
+
+2021-05-07 21:01:02.5822 INFO Request {method} {url} => {statusCode}
+GET
+/api/account/
+
+
