@@ -38,19 +38,6 @@ namespace Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("genders")]
-        public ActionResult<IEnumerable<Gender>> GetGender()
-        {
-            var genders = new List<Gender>
-            {
-                new Gender { Id = -1, Value= "UnKnown"},
-                new Gender { Id = 0, Value= "Male"},
-                new Gender { Id = 1, Value= "Female"},
-            };
-            return Ok(genders);
-        }
-
-        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> LoginAsync(UserLogin model)
         {

@@ -61,19 +61,8 @@ namespace Api.Controllers
             return result.Value.Any() ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Warning", "Not exist value"));
         }
 
-        //[AllowAnonymous]
-        //[HttpGet("genders")]
-        //public ActionResult<IEnumerable<Gender>> GetGender()
-        //{
-        //    //var genders = new List<Gender>
-        //    //{
-        //    //    new Gender { Id = -1, Value= "UnKnown"},
-        //    //    new Gender { Id = 0, Value= "Male"},
-        //    //    new Gender { Id = 1, Value= "Female"},
-        //    //};
-
-        //    var genders = Utils.ConvertEnumToJObject()
-        //    return Ok(genders);
-        //}
+        [AllowAnonymous]
+        [HttpGet("genders")]
+        public ActionResult<IEnumerable<Gender>> GetGender() => Ok(Utils.ConvertEnumToJObject(typeof(Gender)));
     }
 }
