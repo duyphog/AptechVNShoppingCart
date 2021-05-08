@@ -73,8 +73,8 @@ namespace Api.Controllers
             return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
         }
 
-        //[Authorize(Policy = "RequireAdminRole")]
-        [AllowAnonymous]
+        [Authorize(Policy = "RequireAdminRole")]
+        //[AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppUserDTO>>> GetUsersAsync([FromForm] AppUserParameters parameters)
         {
