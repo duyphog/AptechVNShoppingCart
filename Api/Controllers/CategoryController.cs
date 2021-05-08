@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Api.AppServices;
 using Api.Models;
 using Contracts;
 using Entities.Models.DataTransferObjects;
