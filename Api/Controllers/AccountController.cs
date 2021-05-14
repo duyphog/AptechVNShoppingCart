@@ -61,7 +61,7 @@ namespace Api.Controllers
         }
 
         [Authorize(Policy = "RequireAdminRole")]
-        //[AllowAnonymous]
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppUserDTO>>> GetUsersAsync([FromForm] AppUserParameters parameters)
         {
@@ -109,6 +109,15 @@ namespace Api.Controllers
 
             var result = await _appUserService.UpdateCurrentUserAsync(model);
             return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
+        }
+
+        [HttpGet("profile")]
+        public async Task<ActionResult<AppUserDTO>> GetProfilesAsync()
+        {
+            var result = await _appUserService.GetProfileAsync();
+            return result.Succeed 
+                ? Ok(result.Value) 
+                : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Get fail", result.Errors));
         }
     } 
 }

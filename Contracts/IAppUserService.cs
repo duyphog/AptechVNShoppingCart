@@ -20,5 +20,6 @@ namespace Contracts
         Task<ProcessResult<AppUserDTO>> UpdateCurrentUserAsync(AppUserForUpdate user);
         Task<ProcessResult> ChangePasswordAsync(ChangePassword model);
         Task<ProcessResult> DeleteAsync(Guid id);
+        Task<ProcessResult<AppUserDTO>> GetProfileAsync();
     }
 }

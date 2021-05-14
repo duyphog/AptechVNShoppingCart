@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Api.Models;
 using Contracts;
 using Entities.Models.DataTransferObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -18,7 +19,7 @@ namespace Api.Controllers
         {
             _categoryService = categoryService;
         }
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAllAsync()
         {

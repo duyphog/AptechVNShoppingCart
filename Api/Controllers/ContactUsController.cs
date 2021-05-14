@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Api.AppServices;
 using Api.Extentions;
 using Api.Models;
+using Contracts;
 using Entities.Helpers;
 using Entities.Models;
 using Entities.Models.DataTransferObjects;
@@ -17,9 +18,9 @@ namespace Api.Controllers
 {
     public class ContactUsController : ControllerBase
     {
-        private readonly ContactUsService _contactUsService;
+        private readonly IContactUsService _contactUsService;
 
-        public ContactUsController(ContactUsService contactUsService)
+        public ContactUsController(IContactUsService contactUsService)
         {
             _contactUsService = contactUsService;
         }

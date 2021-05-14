@@ -30,6 +30,7 @@ namespace Api.AppServices
             {
                 var contactUs = _mapper.Map<ContactUs>(model);
                 contactUs.CreateDate = DateTime.UtcNow;
+                contactUs.Id = Guid.NewGuid();
                 _repoWrapper.ContactUs.Create(contactUs);
                 if (await _repoWrapper.SaveAsync() <= 0)
                     throw new Exception("Save fail");

@@ -45,6 +45,7 @@ namespace Api
             services.ConfigureCategoryService();
             services.ConfigureAppUtilsService();
             services.ConfigureSalesOrderService();
+            services.ConfigureIontactUsService();
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);

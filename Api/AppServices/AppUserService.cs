@@ -277,5 +277,12 @@ namespace Api.AppServices
 
             return await Process.RunAsync(action);
         }
+
+        public async Task<ProcessResult<AppUserDTO>> GetProfileAsync()
+        {
+            async Task<AppUserDTO> action() => _mapper.Map<AppUserDTO>(CurrentUser);
+       
+            return await Process.RunAsync(action);
+        }
     }
 }

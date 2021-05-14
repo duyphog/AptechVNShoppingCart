@@ -134,6 +134,11 @@ namespace Api.Extentions
         {
             services.AddTransient<ISalesOrderService, SalesOrderService>();
         }
+
+        public static void ConfigureIontactUsService(this IServiceCollection services)
+        {
+            services.AddTransient<IContactUsService, ContactUsService>();
+        }
         
     }
 }
