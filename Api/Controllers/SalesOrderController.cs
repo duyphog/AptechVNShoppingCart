@@ -69,7 +69,7 @@ namespace Api.Controllers
             }
 
             var result = await _salesOrderService.CreateAsync(model);
-            return result.Succeed ? Ok() : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Create fail", result.Errors));
+            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Create fail", result.Errors));
         }
 
         [HttpPut("{id}")]
@@ -85,7 +85,18 @@ namespace Api.Controllers
             return result.Succeed ? Ok() : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
         }
 
+        [HttpPost("payment")]
+        public async Task<IActionResult> CreatePaymentForOrderAsync(PaymentDetailForCreate model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Validation error", errors));
+            }
 
+            var result = await _salesOrderService.PaymentSalesOrder(model);
+            return result.Succeed ? Ok() : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Create fail", result.Errors));
+        }
 
     }
 }

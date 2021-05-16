@@ -15,8 +15,8 @@ namespace Entities.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public decimal Fee { get; set; }
         public bool? Status { get; set; }
+        public decimal Fee { get; set; }
 
         public virtual ICollection<SalesOrder> SalesOrders { get; set; }
     }

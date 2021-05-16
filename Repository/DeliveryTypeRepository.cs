@@ -19,5 +19,10 @@ namespace Repository
         {
             return await FindAll().OrderBy(x => x.Id).ToListAsync();
         }
+
+        public async Task<DeliveryType> FindDeliveryByIdAsync(string id)
+        {
+            return await FindByCondition(x => x.Id == id).FirstOrDefaultAsync();
+        }
     }
 }

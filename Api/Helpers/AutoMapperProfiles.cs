@@ -40,7 +40,12 @@ namespace Api.Helpers
             CreateMap<ProductForUpdate, Product>();
 
             CreateMap<DeliveryType, DeliveryTypeDTO>();
-            CreateMap<SalesOrder, SalesOrderDTO>();
+            CreateMap<SalesOrder, SalesOrderDTO>()
+                .ForMember(x => x.Amount, opt => opt.MapFrom(y => y.Price * y.Quantity))
+                .ForMember(x => x.ProductName, opt => opt.MapFrom(y => y.Product.ProductName));
+
+
+            CreateMap<PaymentDetailForCreate, PaymentDetail>();
         }
     }
 }

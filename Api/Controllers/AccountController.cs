@@ -108,5 +108,12 @@ namespace Api.Controllers
             var result = await _appUserService.UpdateCurrentUserAsync(model);
             return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Update fail", result.Errors));
         }
+
+        [HttpGet("profile")]
+        public ActionResult<AppUserDTO> GetProfile()
+        {
+            var result = _appUserService.GetProfileAsync();
+            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Get fail", result.Errors));
+        }
     } 
 }

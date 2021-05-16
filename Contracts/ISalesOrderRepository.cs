@@ -9,6 +9,7 @@ namespace Contracts
     {
         Task AddRangeSalesOrderAsync(IEnumerable<SalesOrder> salesOrders);
         Task<SalesOrder> FindSalesOrderByIdAsync(string id);
+        Task<IEnumerable<SalesOrder>> FindSalesOrderByOrderNumberAsync(int orderNumber);
         Task<PagedList<SalesOrder>> FindSalesOrderAsync(SalesOrderParameters salesOrderParameters);
     }
 }

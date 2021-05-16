@@ -20,6 +20,7 @@ namespace Repository
         private IContactUsRepository _contactUs;
         private ISalesOrderRepository _salesOrder;
         private IDeliveryTypeRepository _deliveryType;
+        private IPaymentDetailRepository _paymentDetail;
 
         public RepositoryWrapper(ShoppingCartContext context)
         {
@@ -166,6 +167,19 @@ namespace Repository
                 }
 
                 return _deliveryType;
+            }
+        }
+
+        public IPaymentDetailRepository PaymentDetail
+        {
+            get
+            {
+                if (_paymentDetail == null)
+                {
+                    _paymentDetail = new PaymentDetailRepository(_context);
+                }
+
+                return _paymentDetail;
             }
         }
 

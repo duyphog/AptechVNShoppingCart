@@ -16,6 +16,7 @@ namespace Contracts
         IContactUsRepository ContactUs { get; }
         ISalesOrderRepository SalesOrder { get; }
         IDeliveryTypeRepository DeliveryType { get; }
+        IPaymentDetailRepository PaymentDetail { get; }
 
         Task<int> SaveAsync();
     }

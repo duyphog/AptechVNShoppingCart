@@ -89,7 +89,7 @@ namespace Repository
             }
 
 
-            queries = queries.OrderBy(p => p.Id);
+            queries = queries.OrderByDescending(p => p.CreateDate);
             return await PagedList<Product>.ToPagedList(queries, parameters.PageNumber, parameters.PageSize);
         }
 

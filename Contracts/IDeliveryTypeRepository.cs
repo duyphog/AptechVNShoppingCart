@@ -8,5 +8,6 @@ namespace Contracts
     public interface IDeliveryTypeRepository : IRepositoryBase<DeliveryType>
     {
         Task<IEnumerable<DeliveryType>> FindAllDeliveryTypeAsync();
+        Task<DeliveryType> FindDeliveryByIdAsync(string id);
     }
 }

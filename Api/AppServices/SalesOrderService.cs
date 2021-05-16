@@ -22,13 +22,14 @@ namespace Api.AppServices
             _mapper = mapper;
         }
 
-        public async Task<ProcessResult> CreateAsync(SalesOrderForCreate salesOrder)
+        public async Task<ProcessResult<JObject>> CreateAsync(SalesOrderForCreate salesOrder)
         {
-            async Task action()
+            async Task<JObject> action()
             {
                 var now = DateTime.UtcNow;
                 var orders = new List<SalesOrder>();
                 var products = await _repoWrapper.Product.GetProductAsync();
+                var delivery = await _repoWrapper.DeliveryType.FindDeliveryByIdAsync(salesOrder.Order.DeliveryTypeId);
 
                 salesOrder.Details.ToList().ForEach(item =>
                 {
@@ -38,7 +39,6 @@ namespace Api.AppServices
                         AppUserId = CurrentUser.Id,
                         FirstName = salesOrder.Order.FirstName,
                         LastName = salesOrder.Order.LastName,
-                        PaymentTypeId = salesOrder.Order.PaymentTypeId,
                         DeliveryTypeId = salesOrder.Order.DeliveryTypeId,
                         PhoneNumber = salesOrder.Order.PhoneNumber,
                         PostCode = salesOrder.Order.PostCode,
@@ -52,7 +52,7 @@ namespace Api.AppServices
                         //detail
                         ProductId = item.ProductId,
                         Quantity = item.Quantity,
-                        Price = item.Price,
+                        Price = products.Where(x => x.Id == item.ProductId).FirstOrDefault().Price,
                         Product = products.Where(x=>x.Id == item.ProductId).FirstOrDefault(),
                         //info
                         CreateBy = CurrentUser.UserName,
@@ -65,20 +65,19 @@ namespace Api.AppServices
 
                 //update stock
                 orders.ForEach(x => {
-                    if (x.Product.Stock - x.Quantity < 0) throw new Exception($"Stock invalid, {x.Product.ProductName} - inStock: {x.Product.Stock}");
+                    if (x.Product.Unlimited == false && x.Product.Stock - x.Quantity < 0) throw new InvalidOperationException($"Stock invalid, {x.Product.ProductName} - inStock: {x.Product.Stock}");
                         x.Product.Stock -= x.Quantity;
                 });
 
-                //orders.ForEach(async x =>
-                //{
-                //    var product = await _repoWrapper.Product.FindProductByIdAsync(x.ProductId);
-                //    product.Stock -= x.Quantity;
-                //    _repoWrapper.Product.Update(product);
-                //    await _repoWrapper.SaveAsync();
-                //});
-
-                if (await _repoWrapper.SaveAsync() <= 0)
+                if(await _repoWrapper.SaveAsync() < 0)
                     throw new Exception("Save fail");
+
+                var obj = new JObject
+                {
+                    { "orderNumber", orders[0].OrderNumber },
+                    { "amount", orders.Sum(x => x.Price * x.Quantity) + delivery.Fee }
+                };
+                return obj;
             }
 
             return await Process.RunAsync(action);
@@ -104,6 +103,32 @@ namespace Api.AppServices
                 var list = await _repoWrapper.SalesOrder.FindSalesOrderAsync(parameters);
                 return new PagedList<SalesOrderDTO>(_mapper.Map<List<SalesOrder>, List<SalesOrderDTO>>(list),
                    list.TotalCount, list.CurrentPage, list.PageSize);
+            }
+
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult> PaymentSalesOrder(PaymentDetailForCreate model)
+        {
+            async Task action()
+            {
+                var payment = _mapper.Map<PaymentDetail>(model);
+                payment.Id = Guid.NewGuid();
+                payment.CreateBy = CurrentUser.UserName;
+                payment.CreateDate = DateTime.UtcNow;
+
+                var orders = await _repoWrapper.SalesOrder.FindSalesOrderByOrderNumberAsync(model.OrderNumber);
+                orders.ToList().ForEach(x =>
+                {
+                    x.PaymentTypeId = model.PaymentTypeId;
+                    x.IsPaid = true;
+                });
+
+                _repoWrapper.PaymentDetail.Create(payment);
+                if(await _repoWrapper.SaveAsync() <= 0)
+                {
+                    throw new InvalidOperationException("Save fail");
+                }
             }
 
             return await Process.RunAsync(action);

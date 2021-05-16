@@ -9,6 +9,7 @@ namespace Entities.Models
     {
         public PaymentType()
         {
+            PaymentDetails = new HashSet<PaymentDetail>();
             SalesOrders = new HashSet<SalesOrder>();
         }
 
@@ -20,7 +21,9 @@ namespace Entities.Models
         public DateTime? CreateDate { get; set; }
         public string ModifyBy { get; set; }
         public DateTime? ModifyDate { get; set; }
+        public bool IsPaid { get; set; }
 
+        public virtual ICollection<PaymentDetail> PaymentDetails { get; set; }
         public virtual ICollection<SalesOrder> SalesOrders { get; set; }
     }
 }

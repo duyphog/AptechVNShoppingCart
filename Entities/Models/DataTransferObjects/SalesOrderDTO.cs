@@ -8,10 +8,13 @@ namespace Entities.Models.DataTransferObjects
         public Guid? AppUserId { get; set; }
         public int? OrderStatusId { get; set; }
         public int? PaymentTypeId { get; set; }
+        public int? OrderNumber { get; set; }
         public string DeliveryTypeId { get; set; }
         public string ProductId { get; set; }
+        public string ProductName { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
+        public decimal Amount { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string CompanyName { get; set; }
@@ -27,7 +30,5 @@ namespace Entities.Models.DataTransferObjects
         public DateTime? CreateDate { get; set; }
         public string ModifyBy { get; set; }
         public DateTime? ModifyDate { get; set; }
-
-        public decimal TotalAmount { get => Quantity*Price; }
     }
 }

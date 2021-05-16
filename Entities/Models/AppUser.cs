@@ -11,6 +11,7 @@ namespace Entities.Models
         {
             AppUserRoles = new HashSet<AppUserRole>();
             SalesOrders = new HashSet<SalesOrder>();
+            TradeReturnRequests = new HashSet<TradeReturnRequest>();
             UserAddresses = new HashSet<UserAddress>();
         }
 
@@ -31,6 +32,7 @@ namespace Entities.Models
 
         public virtual ICollection<AppUserRole> AppUserRoles { get; set; }
         public virtual ICollection<SalesOrder> SalesOrders { get; set; }
+        public virtual ICollection<TradeReturnRequest> TradeReturnRequests { get; set; }
         public virtual ICollection<UserAddress> UserAddresses { get; set; }
     }
 }

@@ -44,6 +44,10 @@ namespace Repository
         }
 
         public async Task<SalesOrder> FindSalesOrderByIdAsync(string id) => await FindByCondition(x => x.Id == id).FirstOrDefaultAsync();
-        
+
+        public async Task<IEnumerable<SalesOrder>> FindSalesOrderByOrderNumberAsync(int orderNumber)
+        {
+            return await FindByCondition(x => x.OrderNumber == orderNumber).ToListAsync();
+        }
     }
 }

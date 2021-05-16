@@ -15,12 +15,10 @@ namespace Api.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-        private readonly IUrlHelper _urlHelper;
 
         public ProductController(IProductService productService, IUrlHelper urlHelper)
         {
             _productService = productService;
-            _urlHelper = urlHelper;
         }
 
         [AllowAnonymous]
