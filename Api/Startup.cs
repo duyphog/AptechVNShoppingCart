@@ -60,6 +60,13 @@ namespace Api
                         options.SuppressModelStateInvalidFilter = true;
                     });
 
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+                opt.AddPolicy("RequireStaff", policy => policy.RequireRole("Admin", "Staff", "Guest"));
+                opt.AddPolicy("RequireUser", policy => policy.RequireRole("Admin", "Staff"));
+            });
+
             services.Configure<CloudinarySettings>(_config.GetSection("CloudinarySettings"));
             services.AddSwaggerGen(c =>
             {

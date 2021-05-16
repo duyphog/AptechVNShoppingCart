@@ -29,6 +29,7 @@ namespace Api.AppServices
             async Task action()
             {
                 var contactUs = _mapper.Map<ContactUs>(model);
+                contactUs.Id = Guid.NewGuid();
                 contactUs.CreateDate = DateTime.UtcNow;
                 _repoWrapper.ContactUs.Create(contactUs);
                 if (await _repoWrapper.SaveAsync() <= 0)

@@ -9,6 +9,7 @@ using Api.Models;
 using Entities.Helpers;
 using Entities.Models;
 using Entities.Models.DataTransferObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -55,6 +56,7 @@ namespace Api.Controllers
             return result.Value != null ? Ok(result.Value) : NotFound(new ErrorResponse(HttpStatusCode.BadRequest, "Warning", "Not exist value"));
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult> CreateAsync(ContactUsForCreate model)
         {
