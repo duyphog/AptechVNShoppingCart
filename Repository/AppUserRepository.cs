@@ -36,7 +36,7 @@ namespace Repository
 
         public async Task<AppUser> FindAppUserByIdAsync(Guid id)
         {
-            return await FindByCondition(u => u.Id == id).FirstOrDefaultAsync();
+            return await FindByCondition(u => u.Id == id).Include(u => u.AppUserRoles).ThenInclude(ur => ur.Role).FirstOrDefaultAsync();
         }
 
         public async Task<AppUser> FindAppUserByUserNameAsync(string userName)

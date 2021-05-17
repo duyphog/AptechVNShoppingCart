@@ -25,6 +25,7 @@ namespace Entities.Models.DataTransferObjects
         public string PhoneNumber { get; set; }
         public string OrderNote { get; set; }
         public DateTime? ReceivedDate { get; set; }
+        public bool IsTradeOrReturn { get; set; }
         public bool? Status { get; set; }
         public string CreateBy { get; set; }
         public DateTime? CreateDate { get; set; }

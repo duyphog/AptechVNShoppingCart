@@ -1,0 +1,10 @@
+2021-05-17 18:30:28.7786 INFO Request {method} {url} => {statusCode}
+GET
+/apple-touch-icon-precomposed.png
+
+
+2021-05-17 18:30:28.9725 INFO Request {method} {url} => {statusCode}
+GET
+/apple-touch-icon.png
+
+

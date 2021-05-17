@@ -21,6 +21,7 @@ namespace Api.Controllers
             _appUtilsService = appUtilsService;
         }
 
+        [AllowAnonymous]
         [HttpGet("delivery-type")]
         public async Task<ActionResult> GetDeliveryTypeAsync()
         {
@@ -31,6 +32,7 @@ namespace Api.Controllers
             return result.Value.Any() ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Warning", "Not exist value"));
         }
 
+        [AllowAnonymous]
         [HttpGet("order-status")]
         public async Task<ActionResult> GetOrderStatusAsync()
         {
@@ -41,6 +43,7 @@ namespace Api.Controllers
             return result.Value.Any() ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Warning", "Not exist value"));
         }
 
+        [AllowAnonymous]
         [HttpGet("payment-type")]
         public async Task<ActionResult> GetPaymentTypeAsync()
         {

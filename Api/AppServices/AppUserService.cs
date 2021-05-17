@@ -134,7 +134,7 @@ namespace Api.AppServices
 
                     model.RoleIds.ToList().ForEach(rId =>
                     {
-                        userRoles.Add(new AppUserRole { UserId = newId, RoleId = rId });
+                        userRoles.Add(new AppUserRole { UserId = newId, RoleId = rId, Role = appRoles.FirstOrDefault(r => r.Id == rId) });
                     });
                 }
 

@@ -22,5 +22,10 @@ namespace Entities.Models
         public DateTime? ModifyDate { get; set; }
 
         public virtual ICollection<SalesOrder> SalesOrders { get; set; }
+
+        public static implicit operator OrderStatus(int v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

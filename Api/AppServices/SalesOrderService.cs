@@ -95,7 +95,7 @@ namespace Api.AppServices
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<PagedList<SalesOrderDTO>>> FindAllSalesOrderByCurrentUser(SalesOrderParameters parameters)
+        public async Task<ProcessResult<PagedList<SalesOrderDTO>>> FindAllSalesOrderForCurrentUser(SalesOrderParameters parameters)
         {
             async Task<PagedList<SalesOrderDTO>> action()
             {
@@ -108,7 +108,7 @@ namespace Api.AppServices
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult> PaymentSalesOrder(PaymentDetailForCreate model)
+        public async Task<ProcessResult> PaymentSalesOrderAsync(PaymentDetailForCreate model)
         {
             async Task action()
             {
@@ -129,6 +129,41 @@ namespace Api.AppServices
                 {
                     throw new InvalidOperationException("Save fail");
                 }
+            }
+
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult<SalesOrderDTO>> TradeOrReturnAsync(SaleOrderForTradeOrReturn model)
+        {
+            async Task<SalesOrderDTO> action()
+            {
+                var order = await _repoWrapper.SalesOrder.FindSalesOrderByIdAsync(model.SalesOrderId);
+                if (DateTime.UtcNow.CompareTo(order.OrderDate.AddDays(7)) > 0)
+                {
+                    throw new InvalidOperationException("Great than 7 Day");
+                }
+
+                order.OrderStatus = model.IsTrade ? 7 : 8;
+                order.TradeReturnRequests = new List<TradeReturnRequest> {
+                    new TradeReturnRequest
+                    {
+                        Id = Guid.NewGuid(),
+                        AppUserId = CurrentUser.Id,
+                        CreateBy = CurrentUser.UserName,
+                        CreateDate = DateTime.UtcNow,
+                        Description = model.Description,
+                        ProductId = order.ProductId,
+                        Quantity = model.Quantity,
+                        RequestStatus = 0,
+                        Type = model.IsTrade ? 0 : 1,
+                        Status = true
+                    }
+                };
+
+                return await _repoWrapper.SaveAsync() > 0
+                    ? _mapper.Map<SalesOrderDTO>(order)
+                    : throw new InvalidOperationException("Save fail");
             }
 
             return await Process.RunAsync(action);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Api.Models;
 using Contracts;
 using Entities.Helpers;
 using Entities.Models.DataTransferObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
@@ -24,7 +26,7 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<IActionResult> FindOrderAsync([FromForm] SalesOrderParameters parameters)
         {
-            var result = await _salesOrderService.FindAllSalesOrderByCurrentUser(parameters);
+            var result = await _salesOrderService.FindAllSalesOrderForCurrentUser(parameters);
             if (!result.Succeed)
             {
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
@@ -94,8 +96,41 @@ namespace Api.Controllers
                 return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Validation error", errors));
             }
 
-            var result = await _salesOrderService.PaymentSalesOrder(model);
+            var result = await _salesOrderService.PaymentSalesOrderAsync(model);
             return result.Succeed ? Ok() : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Create fail", result.Errors));
+        }
+
+        [Authorize(Policy = "RequireMember")]
+        [HttpGet("my-orders")]
+        public async Task<ActionResult<IEnumerable<SalesOrderDTO>>> GetOrderForUserAsync([FromForm] SalesOrderParameters parameters)
+        {
+            var result = await _salesOrderService.FindAllSalesOrderForCurrentUser(parameters);
+            if (!result.Succeed)
+            {
+                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
+            }
+
+            var list = result.Value;
+
+            if (list.TotalCount == 0)
+                return NoContent();
+
+            Response.AddPagination(list.TotalCount, list.PageSize, list.CurrentPage, list.TotalPages, list.HasPrevious, list.HasNext);
+
+            return Ok(list);
+        }
+
+        [Authorize(Policy = "RequireMember")]
+        [HttpPost("trade-return")]
+        public async Task<ActionResult<SalesOrderDTO>> TradeOrReturnForUserAsync(SaleOrderForTradeOrReturn model)
+        {
+            var result = await _salesOrderService.TradeOrReturnAsync(model);
+            if (!result.Succeed)
+            {
+                return BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
+            }
+
+            return result.Succeed ? Ok(result.Value) : BadRequest(new ErrorResponse(HttpStatusCode.BadRequest, "Fail", result.Errors));
         }
 
     }
